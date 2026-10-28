@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: fulgur-cache
+      - name: Lint PHP
+        run: find fulgur-cache -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Build zip
+        run: |
+          rm -rf fulgur-cache/.git fulgur-cache/.github fulgur-cache/.gitattributes
+          zip -qr fulgur-cache.zip fulgur-cache
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: fulgur-cache.zip
+          generate_release_notes: true
