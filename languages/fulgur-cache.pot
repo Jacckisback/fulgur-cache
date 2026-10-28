@@ -4,7 +4,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-28 22:12+0000\n"
+"POT-Creation-Date: 2026-10-28 22:43+0000\n"
 "X-Domain: fulgur-cache\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -411,11 +411,11 @@ msgid "Safe"
 msgstr ""
 
 #: includes/class-settings.php:103
-msgid "Cache + compression + media. Zero risk of breakage, works with 100% of themes."
+msgid "Cache, compression and image optimizations only. Scripts and stylesheets load exactly as before."
 msgstr ""
 
 #: includes/class-settings.php:104
-msgid "+40 to 60% faster"
+msgid "Lowest risk"
 msgstr ""
 
 #: includes/class-settings.php:122
@@ -427,7 +427,7 @@ msgid "Recommended. Adds critical CSS, minification, deferred JavaScript, YouTub
 msgstr ""
 
 #: includes/class-settings.php:124
-msgid "+60 to 80% faster"
+msgid "Best speed / safety balance"
 msgstr ""
 
 #: includes/class-settings.php:142
@@ -439,7 +439,7 @@ msgid "Maximum performance: unused CSS removed, JavaScript loaded on first inter
 msgstr ""
 
 #: includes/class-settings.php:144
-msgid "Targets a 90+ PageSpeed score"
+msgid "Maximum speed — test your site"
 msgstr ""
 
 #: assets/admin.js:19
@@ -475,15 +475,15 @@ msgid "Model"
 msgstr ""
 
 #: assets/admin.js:29
-msgid "Claude Opus 5.5 — most accurate (≈ $0.15 to $0.40 per analysis)"
+msgid "Claude Opus 5.5 — most accurate (≈ $0.10 to $0.30 per analysis)"
 msgstr ""
 
 #: assets/admin.js:29
-msgid "Claude Sonnet 5.5 — balanced (≈ $0.08 to $0.20)"
+msgid "Claude Sonnet 5.5 — balanced (≈ $0.05 to $0.15)"
 msgstr ""
 
 #: assets/admin.js:29
-msgid "Claude Haiku 5.5 — budget (≈ $0.01)"
+msgid "Claude Haiku 5.5 — budget (under $0.01)"
 msgstr ""
 
 #: assets/admin.js:29
@@ -1679,8 +1679,8 @@ msgid "Settings imported."
 msgstr ""
 
 #: assets/admin.js:214
-msgid "Cache active · %d page"
-msgid_plural "Cache active · %d pages"
+msgid "Cache active · %s page"
+msgid_plural "Cache active · %s pages"
 msgstr[0] ""
 msgstr[1] ""
 

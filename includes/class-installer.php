@@ -270,6 +270,10 @@ class Installer {
 	public static function nginx_rules() {
 		$cache_rel = self::relative_to_root( FULGUR_CACHE_DIR );
 		$cookies   = implode( '|', \Fulgur_Serve::BYPASS_COOKIES );
+		// With a separate mobile cache, mobile visitors go through PHP, which picks the right file.
+		$mobile = Settings::get( 'cache_mobile' )
+			? "if (\$http_user_agent ~* \"(Mobile|Android|Silk/|Kindle|BlackBerry|Opera Mini|Opera Mobi|iPhone|iPod)\") { set \$fulgur_ok 0; }\n"
+			: '';
 		return <<<NGINX
 # --- Fulgur Cache: static serving without PHP ---
 set \$fulgur_file "/{$cache_rel}/\$host\${uri}index.html";
@@ -277,7 +281,7 @@ set \$fulgur_ok 1;
 if (\$request_method != GET) { set \$fulgur_ok 0; }
 if (\$args != "") { set \$fulgur_ok 0; }
 if (\$http_cookie ~* "({$cookies})") { set \$fulgur_ok 0; }
-if (\$uri !~ /\$) { set \$fulgur_ok 0; }
+{$mobile}if (\$uri !~ /\$) { set \$fulgur_ok 0; }
 if (\$fulgur_ok = 0) { set \$fulgur_file "/nonexistent"; }
 
 gzip_static on;        # serves index.html.gz when present

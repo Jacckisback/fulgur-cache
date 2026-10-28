@@ -100,8 +100,8 @@ class Settings {
 		return array(
 			'safe'     => array(
 				'label'       => __( 'Safe', 'fulgur-cache' ),
-				'description' => __( 'Cache + compression + media. Zero risk of breakage, works with 100% of themes.', 'fulgur-cache' ),
-				'gain'        => __( '+40 to 60% faster', 'fulgur-cache' ),
+				'description' => __( 'Cache, compression and image optimizations only. Scripts and stylesheets load exactly as before.', 'fulgur-cache' ),
+				'gain'        => __( 'Lowest risk', 'fulgur-cache' ),
 				'values'      => array(
 					'page_cache'      => true,
 					'minify_html'     => true,
@@ -121,7 +121,7 @@ class Settings {
 			'balanced' => array(
 				'label'       => __( 'Balanced', 'fulgur-cache' ),
 				'description' => __( 'Recommended. Adds critical CSS, minification, deferred JavaScript, YouTube facades and instant prerendering.', 'fulgur-cache' ),
-				'gain'        => __( '+60 to 80% faster', 'fulgur-cache' ),
+				'gain'        => __( 'Best speed / safety balance', 'fulgur-cache' ),
 				'values'      => array(
 					'page_cache'      => true,
 					'minify_html'     => true,
@@ -141,7 +141,7 @@ class Settings {
 			'turbo'    => array(
 				'label'       => __( 'Turbo', 'fulgur-cache' ),
 				'description' => __( 'Maximum performance: unused CSS removed, JavaScript loaded on first interaction, Google Fonts hosted locally (GDPR).', 'fulgur-cache' ),
-				'gain'        => __( 'Targets a 90+ PageSpeed score', 'fulgur-cache' ),
+				'gain'        => __( 'Maximum speed — test your site', 'fulgur-cache' ),
 				'values'      => array(
 					'page_cache'      => true,
 					'minify_html'     => true,

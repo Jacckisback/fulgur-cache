@@ -4,7 +4,7 @@ Tags: cache, performance, pagespeed, critical css, ai
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,13 @@ Fulgur Cache contacts no external service by default. Depending on the features 
 * **Cloudflare** — if an API token is set, to purge the Cloudflare cache. https://www.cloudflare.com/privacypolicy/
 
 == Changelog ==
+
+= 1.2.1 =
+* Profile cards describe what each profile does instead of estimated speed gains.
+* AI cost estimates aligned with Anthropic's published prices.
+* Nginx rules no longer serve the desktop page to mobile visitors when the separate mobile cache is enabled.
+* `data-fulgur-skip` on a stylesheet now also skips its minification.
+* Page count in the header uses the admin's number format.
 
 = 1.2.0 =
 * English interface, French translation included (wp.i18n for the admin app).

@@ -67,7 +67,7 @@ class Assets {
 					return $m[0];
 				}
 				$file = self::url_to_path( $href[1] );
-				if ( ! $file || '.css' !== substr( $file, -4 ) || self::is_excluded( $href[1] ) ) {
+				if ( ! $file || '.css' !== substr( $file, -4 ) || self::is_excluded( $href[1] ) || preg_match( '/\bdata-fulgur-skip\b/i', $m[0] ) ) {
 					return $m[0];
 				}
 				$url = self::minified_file( $file, $href[1], $swap );

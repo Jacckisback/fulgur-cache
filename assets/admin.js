@@ -26,7 +26,7 @@
 		{ id: 'ai', icon: '✦', label: __('AI Optimizer', 'fulgur-cache'), sections: [
 			{ title: __('Analysis and optimization by Claude', 'fulgur-cache'), fields: [], custom: 'aiRun' },
 			{ title: __('Connection to Claude', 'fulgur-cache'), fields: [
-				{ key: 'ai_model', type: 'select', label: __('Model', 'fulgur-cache'), options: { 'claude-opus-5-5': __('Claude Opus 5.5 — most accurate (≈ $0.15 to $0.40 per analysis)', 'fulgur-cache'), 'claude-sonnet-5-5': __('Claude Sonnet 5.5 — balanced (≈ $0.08 to $0.20)', 'fulgur-cache'), 'claude-haiku-5-5': __('Claude Haiku 5.5 — budget (≈ $0.01)', 'fulgur-cache') }, help: __('Billed directly by Anthropic on your API key. One analysis a week is enough.', 'fulgur-cache') },
+				{ key: 'ai_model', type: 'select', label: __('Model', 'fulgur-cache'), options: { 'claude-opus-5-5': __('Claude Opus 5.5 — most accurate (≈ $0.10 to $0.30 per analysis)', 'fulgur-cache'), 'claude-sonnet-5-5': __('Claude Sonnet 5.5 — balanced (≈ $0.05 to $0.15)', 'fulgur-cache'), 'claude-haiku-5-5': __('Claude Haiku 5.5 — budget (under $0.01)', 'fulgur-cache') }, help: __('Billed directly by Anthropic on your API key. One analysis a week is enough.', 'fulgur-cache') },
 				{ key: 'ai_psi', type: 'toggle', label: __('Include Google PageSpeed measurements', 'fulgur-cache'), help: __('Claude gets the real Core Web Vitals (LCP, TBT, CLS) and the issues found by Lighthouse. Adds 1 to 2 minutes to the analysis.', 'fulgur-cache'), risk: 'safe' },
 				{ key: 'ai_auto', type: 'select', label: __('Autopilot', 'fulgur-cache'), options: { off: __('Off', 'fulgur-cache'), suggest: __('Analyze every week and email me the recommendations', 'fulgur-cache'), auto: __('Analyze and apply safe settings every week (automatic rollback if the score drops)', 'fulgur-cache') } }
 			], custom: 'aiKey' },
@@ -211,7 +211,7 @@
 
 		html += '<header class="fulgur-header">' +
 			'<div class="fulgur-brand"><span class="fulgur-logo">⚡</span><div><h1>Fulgur Cache</h1><span class="fulgur-version">v' + esc(D.version) + '</span></div></div>' +
-			'<div class="fulgur-status ' + (s.page_cache ? 'is-on' : 'is-off') + '"><span class="dot"></span>' + esc(s.page_cache ? sprintf(_n('Cache active · %d page', 'Cache active · %d pages', state.usage.pages, 'fulgur-cache'), state.usage.pages) : __('Cache disabled', 'fulgur-cache')) + '</div>' +
+			'<div class="fulgur-status ' + (s.page_cache ? 'is-on' : 'is-off') + '"><span class="dot"></span>' + esc(s.page_cache ? sprintf(_n('Cache active · %s page', 'Cache active · %s pages', state.usage.pages, 'fulgur-cache'), num(state.usage.pages)) : __('Cache disabled', 'fulgur-cache')) + '</div>' +
 			'<div class="fulgur-actions">' +
 			'<a class="fulgur-btn is-ghost" href="' + esc(D.preview) + '" target="_blank" rel="noopener" title="' + esc(__('View the home page with optimizations, without caching anything', 'fulgur-cache')) + '">' + esc(__('Test safely', 'fulgur-cache')) + ' ↗</a>' +
 			'<button class="fulgur-btn is-secondary" data-action="preload">' + esc(__('Preload', 'fulgur-cache')) + '</button>' +
