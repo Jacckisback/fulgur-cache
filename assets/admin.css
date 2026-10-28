@@ -1,0 +1,272 @@
+/* Fulgur Cache — interface d'administration */
+.fulgur-wrap {
+	--f-bg: #f6f7fb;
+	--f-card: #fff;
+	--f-text: #111827;
+	--f-muted: #6b7280;
+	--f-border: #e5e7eb;
+	--f-accent: #6d28d9;
+	--f-accent-2: #f59e0b;
+	--f-accent-soft: #f3efff;
+	--f-good: #059669;
+	--f-good-soft: #ecfdf5;
+	--f-warn: #d97706;
+	--f-warn-soft: #fffbeb;
+	--f-bad: #dc2626;
+	--f-bad-soft: #fef2f2;
+	--f-radius: 14px;
+	--f-shadow: 0 1px 2px rgba(17, 24, 39, .04), 0 4px 16px rgba(17, 24, 39, .06);
+	margin: 0 0 0 -20px;
+	padding: 0;
+	min-height: calc(100vh - 32px);
+	background: var(--f-bg);
+	color: var(--f-text);
+	font-size: 14px;
+}
+.fulgur-wrap *, .fulgur-wrap *::before, .fulgur-wrap *::after { box-sizing: border-box; }
+.fulgur-wrap h1, .fulgur-wrap h2, .fulgur-wrap h3 { color: var(--f-text); margin: 0; }
+.fulgur-loading { padding: 60px; text-align: center; color: var(--f-muted); }
+
+/* En-tête */
+.fulgur-header {
+	display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+	padding: 18px 32px; background: var(--f-card); border-bottom: 1px solid var(--f-border);
+	position: sticky; top: 32px; z-index: 50;
+}
+.fulgur-brand { display: flex; align-items: center; gap: 12px; }
+.fulgur-brand h1 { font-size: 19px; font-weight: 700; letter-spacing: -.01em; line-height: 1.2; }
+.fulgur-version { color: var(--f-muted); font-size: 12px; }
+.fulgur-logo {
+	display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 12px;
+	background: linear-gradient(135deg, var(--f-accent), #a855f7 55%, var(--f-accent-2)); color: #fff; font-size: 20px;
+	box-shadow: 0 6px 18px rgba(109, 40, 217, .35);
+}
+.fulgur-logo.is-big { width: 64px; height: 64px; font-size: 32px; border-radius: 18px; margin-bottom: 16px; }
+.fulgur-status { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 99px; font-weight: 600; font-size: 13px; }
+.fulgur-status .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.fulgur-status.is-on { background: var(--f-good-soft); color: var(--f-good); }
+.fulgur-status.is-on .dot { box-shadow: 0 0 0 0 currentColor; animation: fulgur-pulse 2s infinite; }
+.fulgur-status.is-off { background: var(--f-bad-soft); color: var(--f-bad); }
+.fulgur-actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* Boutons */
+.fulgur-btn {
+	display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+	height: 38px; padding: 0 16px; border-radius: 10px; border: 1px solid transparent;
+	font: 600 13px/1 inherit; font-family: inherit; cursor: pointer; text-decoration: none; white-space: nowrap;
+	transition: background .15s, border-color .15s, transform .1s, box-shadow .15s;
+}
+.fulgur-btn:active { transform: translateY(1px); }
+.fulgur-btn:focus-visible { outline: 2px solid var(--f-accent); outline-offset: 2px; }
+.fulgur-btn:disabled { opacity: .7; cursor: progress; }
+.fulgur-btn.is-primary { background: var(--f-accent); color: #fff; box-shadow: 0 4px 12px rgba(109, 40, 217, .25); }
+.fulgur-btn.is-primary:hover { background: #5b21b6; color: #fff; }
+.fulgur-btn.is-secondary { background: var(--f-card); color: var(--f-text); border-color: var(--f-border); }
+.fulgur-btn.is-secondary:hover { border-color: #c7c9d1; background: #fafafa; color: var(--f-text); }
+.fulgur-btn.is-ghost { background: transparent; color: var(--f-accent); }
+.fulgur-btn.is-ghost:hover { background: var(--f-accent-soft); color: var(--f-accent); }
+.fulgur-btn.is-light { background: rgba(255, 255, 255, .16); color: #fff; border-color: rgba(255, 255, 255, .3); }
+.fulgur-btn.is-light:hover { background: rgba(255, 255, 255, .26); color: #fff; }
+.fulgur-btn.is-danger { background: var(--f-card); color: var(--f-bad); border-color: #fecaca; }
+.fulgur-btn.is-small { height: 32px; padding: 0 12px; font-size: 12px; }
+.fulgur-btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.fulgur-link { background: none; border: 0; color: var(--f-muted); text-decoration: underline; cursor: pointer; margin-top: 18px; font-size: 13px; }
+.fulgur-spin {
+	width: 14px; height: 14px; border-radius: 50%; display: inline-block;
+	border: 2px solid currentColor; border-right-color: transparent; animation: fulgur-rot .7s linear infinite;
+}
+
+/* Mise en page */
+.fulgur-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 28px; padding: 28px 32px 120px; max-width: 1280px; }
+.fulgur-nav { display: flex; flex-direction: column; gap: 2px; position: sticky; top: 120px; align-self: start; }
+.fulgur-nav a {
+	display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px;
+	color: #374151; text-decoration: none; font-weight: 500; transition: background .15s;
+}
+.fulgur-nav a:hover { background: #eceef4; color: var(--f-text); }
+.fulgur-nav a.is-active { background: var(--f-card); color: var(--f-accent); box-shadow: var(--f-shadow); font-weight: 600; }
+.fulgur-nav a:focus { box-shadow: none; outline: 2px solid var(--f-accent); outline-offset: -2px; }
+.fulgur-nav .ico { width: 22px; text-align: center; font-size: 13px; opacity: .8; font-weight: 700; }
+.fulgur-badge-count { margin-left: auto; background: var(--f-bad); color: #fff; font-size: 11px; border-radius: 99px; padding: 1px 7px; }
+.fulgur-main { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+.fulgur-tab-head h2 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+
+/* Héros */
+.fulgur-hero {
+	position: relative; overflow: hidden; border-radius: 18px; padding: 28px 30px; color: #fff;
+	background: radial-gradient(circle at 85% 20%, rgba(245, 158, 11, .45), transparent 45%), linear-gradient(135deg, #4c1d95, #6d28d9 50%, #7c3aed);
+	display: grid; grid-template-columns: 1fr auto; gap: 18px 24px; align-items: center;
+}
+.fulgur-hero h2 { color: #fff; font-size: 24px; font-weight: 600; letter-spacing: -.02em; }
+.fulgur-hero h2 strong { color: #fde68a; }
+.fulgur-hero p { margin: 8px 0 0; opacity: .9; font-size: 14px; }
+.fulgur-hero-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.fulgur-psi { grid-column: 1 / -1; display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+.fulgur-psi:empty { display: none; }
+.fulgur-psi ul { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(180px, 1fr)); gap: 6px 24px; }
+.fulgur-psi li { display: flex; justify-content: space-between; gap: 12px; margin: 0; font-size: 13px; }
+.fulgur-psi a { color: #fde68a; }
+.fulgur-gauge {
+	--c: var(--f-bad); width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center;
+	background: conic-gradient(var(--c) calc(var(--p) * 1%), rgba(255, 255, 255, .2) 0);
+}
+.fulgur-gauge span { width: 62px; height: 62px; border-radius: 50%; background: #4c1d95; display: grid; place-items: center; font-size: 22px; font-weight: 700; }
+.fulgur-gauge.is-good { --c: #34d399; }
+.fulgur-gauge.is-avg { --c: #fbbf24; }
+
+/* KPI */
+.fulgur-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.fulgur-kpi { background: var(--f-card); border-radius: var(--f-radius); padding: 18px; box-shadow: var(--f-shadow); display: flex; flex-direction: column; gap: 4px; }
+.fulgur-kpi .label { color: var(--f-muted); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.fulgur-kpi .value { font-size: 26px; font-weight: 700; letter-spacing: -.02em; }
+.fulgur-kpi .sub { color: var(--f-muted); font-size: 12px; }
+.fulgur-kpi.is-good .value { color: var(--f-good); }
+.fulgur-kpi.is-bad .value { color: var(--f-bad); }
+
+/* Cartes et champs */
+.fulgur-card { background: var(--f-card); border-radius: var(--f-radius); box-shadow: var(--f-shadow); padding: 6px 24px 10px; }
+.fulgur-card-head { padding: 18px 0 8px; }
+.fulgur-card-head h3 { font-size: 16px; font-weight: 700; }
+.fulgur-card-head p { color: var(--f-muted); margin: 4px 0 0; }
+.fulgur-field { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center; padding: 16px 0; border-top: 1px solid #f0f1f4; }
+.fulgur-card-head + .fulgur-field { border-top: 0; }
+.fulgur-field.is-wide { grid-template-columns: minmax(0, 1fr) minmax(240px, 380px); align-items: start; }
+.fulgur-field-text label { font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.fulgur-field-text p { margin: 4px 0 0; color: var(--f-muted); font-size: 13px; line-height: 1.5; max-width: 640px; }
+.fulgur-field-input input[type=text], .fulgur-field-input input[type=password], .fulgur-field-input input[type=number], .fulgur-field-input select, .fulgur-field-input textarea {
+	width: 100%; border: 1px solid var(--f-border); border-radius: 10px; padding: 8px 12px; font-size: 13px; background: #fff; box-shadow: none; max-width: none;
+}
+.fulgur-field-input textarea { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; resize: vertical; }
+.fulgur-field-input :focus { border-color: var(--f-accent) !important; box-shadow: 0 0 0 3px var(--f-accent-soft) !important; outline: none; }
+.fulgur-number { display: flex; align-items: center; gap: 8px; }
+.fulgur-number input { width: 90px !important; }
+.fulgur-number span { color: var(--f-muted); font-size: 13px; }
+.fulgur-range { display: flex; align-items: center; gap: 12px; }
+.fulgur-range input { accent-color: var(--f-accent); width: 180px; }
+.fulgur-range output { font-weight: 700; min-width: 28px; }
+
+.fulgur-risk { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 99px; }
+.fulgur-risk.is-safe { background: var(--f-good-soft); color: var(--f-good); }
+.fulgur-risk.is-moderate { background: var(--f-warn-soft); color: var(--f-warn); }
+.fulgur-risk.is-advanced { background: var(--f-bad-soft); color: var(--f-bad); }
+
+/* Interrupteur */
+.fulgur-switch { position: relative; display: inline-block; width: 46px; height: 26px; cursor: pointer; }
+.fulgur-switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 1; }
+.fulgur-switch span { position: absolute; inset: 0; background: #d1d5db; border-radius: 99px; transition: background .2s; }
+.fulgur-switch span::after {
+	content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .2); transition: transform .2s cubic-bezier(.3, 1.4, .6, 1);
+}
+.fulgur-switch input:checked + span { background: var(--f-accent); }
+.fulgur-switch input:checked + span::after { transform: translateX(20px); }
+.fulgur-switch input:focus-visible + span { box-shadow: 0 0 0 3px var(--f-accent-soft); }
+
+/* Profils */
+.fulgur-profiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 8px 0 16px; }
+.fulgur-profile {
+	position: relative; text-align: left; display: flex; flex-direction: column; gap: 6px; padding: 18px;
+	border: 2px solid var(--f-border); border-radius: var(--f-radius); background: #fff; cursor: pointer; font-family: inherit;
+	transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+.fulgur-profile:hover { border-color: #c4b5fd; transform: translateY(-2px); box-shadow: var(--f-shadow); }
+.fulgur-profile.is-active { border-color: var(--f-accent); background: var(--f-accent-soft); }
+.fulgur-profile .name { font-size: 17px; font-weight: 700; color: var(--f-text); }
+.fulgur-profile .gain { color: var(--f-accent); font-weight: 600; font-size: 13px; }
+.fulgur-profile .desc { color: var(--f-muted); font-size: 13px; line-height: 1.5; }
+.fulgur-profile .check { color: var(--f-accent); font-weight: 700; font-size: 12px; margin-top: 4px; }
+.fulgur-profile .ribbon { position: absolute; top: -10px; right: 14px; background: var(--f-accent-2); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
+
+/* Diagnostics */
+.fulgur-checks { margin: 0; padding: 4px 0 8px; }
+.fulgur-checks li { display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: center; padding: 12px 0; margin: 0; border-top: 1px solid #f0f1f4; }
+.fulgur-checks li:first-child { border-top: 0; }
+.fulgur-checks .ico { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+.fulgur-checks p { margin: 2px 0 0; color: var(--f-muted); font-size: 13px; }
+.fulgur-checks .is-ok .ico { background: var(--f-good-soft); color: var(--f-good); }
+.fulgur-checks .is-warning .ico { background: var(--f-warn-soft); color: var(--f-warn); }
+.fulgur-checks .is-error .ico { background: var(--f-bad-soft); color: var(--f-bad); }
+.fulgur-checks .is-info .ico { background: #eff6ff; color: #2563eb; }
+
+/* Blocs divers */
+.fulgur-inline { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid #f0f1f4; flex-wrap: wrap; }
+.fulgur-inline > div { flex: 1; min-width: 220px; }
+.fulgur-inline p { margin: 4px 0 0; color: var(--f-muted); font-size: 13px; }
+.fulgur-inline.is-warn { color: var(--f-warn); }
+.fulgur-note { color: var(--f-muted); font-size: 13px; margin: 0 0 12px; }
+.fulgur-progress { height: 8px; background: #eef0f4; border-radius: 99px; overflow: hidden; margin-top: 10px; }
+.fulgur-progress div { height: 100%; width: 0; background: linear-gradient(90deg, var(--f-accent), #a855f7); transition: width .3s; }
+.fulgur-db { margin: 0; }
+.fulgur-db li { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; margin: 0; border-top: 1px solid #f0f1f4; }
+.fulgur-db li:first-child { border-top: 0; }
+.fulgur-db input { accent-color: var(--f-accent); margin-right: 8px; }
+.fulgur-db .count { font-weight: 700; color: var(--f-muted); font-variant-numeric: tabular-nums; }
+.fulgur-db .count.has { color: var(--f-accent); }
+.fulgur-code { background: #0f172a; color: #e2e8f0; padding: 16px; border-radius: 10px; overflow: auto; font-size: 12px; line-height: 1.6; max-height: 320px; }
+
+/* Barre d'enregistrement */
+.fulgur-savebar {
+	position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 140%); z-index: 100;
+	display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 20px; border-radius: 14px;
+	background: #111827; color: #fff; box-shadow: 0 12px 40px rgba(0, 0, 0, .3); visibility: hidden; opacity: 0;
+	transition: transform .3s cubic-bezier(.3, 1.3, .6, 1), opacity .2s, visibility .3s;
+}
+.fulgur-savebar.is-visible { transform: translate(-50%, 0); visibility: visible; opacity: 1; }
+.fulgur-savebar span { font-weight: 600; margin-right: 8px; }
+.fulgur-savebar .is-ghost { color: #d1d5db; }
+.fulgur-savebar .is-ghost:hover { background: rgba(255, 255, 255, .1); color: #fff; }
+
+/* Toast */
+.fulgur-toast {
+	position: fixed; right: 24px; bottom: 24px; z-index: 100001; max-width: 380px; padding: 14px 18px; border-radius: 12px;
+	background: #111827; color: #fff; font-weight: 500; box-shadow: 0 12px 40px rgba(0, 0, 0, .25);
+	transform: translateY(20px); opacity: 0; pointer-events: none; transition: all .25s;
+	border-left: 4px solid #34d399;
+}
+.fulgur-toast.is-visible { transform: none; opacity: 1; }
+.fulgur-toast.is-error { border-left-color: #f87171; }
+.fulgur-toast.is-warn { border-left-color: #fbbf24; }
+
+/* Onboarding */
+.fulgur-modal { position: fixed; inset: 0; z-index: 100000; background: rgba(17, 24, 39, .6); backdrop-filter: blur(4px); display: grid; place-items: center; padding: 20px; }
+.fulgur-modal-box { background: #fff; border-radius: 20px; padding: 40px; max-width: 920px; width: 100%; text-align: center; box-shadow: 0 30px 80px rgba(0, 0, 0, .35); max-height: 90vh; overflow: auto; }
+.fulgur-modal-box h2 { font-size: 26px; letter-spacing: -.02em; }
+.fulgur-modal-box > div > p { color: var(--f-muted); font-size: 15px; margin: 10px auto 24px; max-width: 560px; }
+.fulgur-steps { list-style: none; margin: 28px auto; padding: 0; max-width: 340px; text-align: left; }
+.fulgur-steps li { padding: 10px 0 10px 36px; position: relative; color: var(--f-muted); margin: 0; }
+.fulgur-steps li::before { content: ""; position: absolute; left: 0; top: 9px; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--f-border); }
+.fulgur-steps li.is-running { color: var(--f-text); font-weight: 600; }
+.fulgur-steps li.is-running::before { border-color: var(--f-accent); border-right-color: transparent; animation: fulgur-rot .7s linear infinite; }
+.fulgur-steps li.is-done { color: var(--f-good); }
+.fulgur-steps li.is-done::before { content: "✓"; background: var(--f-good); border-color: var(--f-good); color: #fff; font-size: 12px; display: grid; place-items: center; }
+.fulgur-result { margin-bottom: 20px; }
+.fulgur-result .big { display: block; font-size: 56px; font-weight: 800; letter-spacing: -.03em; background: linear-gradient(135deg, var(--f-accent), var(--f-accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.fulgur-result p { margin: 0; font-size: 15px; }
+
+@keyframes fulgur-rot { to { transform: rotate(360deg); } }
+@keyframes fulgur-pulse { 0% { box-shadow: 0 0 0 0 rgba(5, 150, 105, .5); } 70% { box-shadow: 0 0 0 8px rgba(5, 150, 105, 0); } 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0); } }
+
+@media (prefers-reduced-motion: reduce) {
+	.fulgur-wrap *, .fulgur-toast, .fulgur-savebar { animation: none !important; transition: none !important; }
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+	.fulgur-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+	.fulgur-profiles { grid-template-columns: 1fr; }
+}
+@media (max-width: 782px) {
+	.fulgur-wrap { margin-left: -10px; }
+	.fulgur-header { top: 46px; padding: 14px 16px; position: static; }
+	.fulgur-actions { margin-left: 0; width: 100%; }
+	.fulgur-layout { grid-template-columns: 1fr; padding: 16px 16px 120px; gap: 16px; }
+	.fulgur-nav { flex-direction: row; overflow-x: auto; position: static; padding-bottom: 4px; }
+	.fulgur-nav a { white-space: nowrap; }
+	.fulgur-hero { grid-template-columns: 1fr; padding: 22px; }
+	.fulgur-hero-actions { justify-content: flex-start; }
+	.fulgur-psi ul { grid-template-columns: 1fr; }
+	.fulgur-field, .fulgur-field.is-wide { grid-template-columns: 1fr; gap: 10px; }
+	.fulgur-card { padding: 4px 16px 8px; }
+	.fulgur-modal-box { padding: 24px; }
+	.fulgur-savebar { width: calc(100% - 32px); flex-wrap: wrap; }
+}
