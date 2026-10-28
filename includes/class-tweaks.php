@@ -4,7 +4,7 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Allègement de WordPress : tout ce qui est chargé inutilement sur chaque page.
+ * WordPress cleanup: everything loaded for nothing on every page.
  */
 class Tweaks {
 
@@ -103,7 +103,7 @@ class Tweaks {
 		}
 
 		if ( $this->s['wc_cart_fragments'] ) {
-			// Le script cart-fragments lance une requête AJAX non cachable sur chaque page.
+			// The cart-fragments script fires an uncacheable AJAX request on every page.
 			add_action(
 				'wp_enqueue_scripts',
 				static function () {
@@ -115,7 +115,7 @@ class Tweaks {
 			);
 		}
 
-		// Speculation Rules natives de WordPress 6.8+.
+		// Native WordPress 6.8+ Speculation Rules.
 		add_filter( 'wp_speculation_rules_configuration', array( $this, 'core_speculation' ) );
 		add_filter( 'wp_speculation_rules_href_exclude_paths', array( $this, 'core_speculation_exclusions' ) );
 	}
@@ -123,7 +123,7 @@ class Tweaks {
 	public function heartbeat() {
 		$mode = $this->s['heartbeat'];
 		if ( 'disable' === $mode || ( 'disable_front' === $mode && ! is_admin() ) ) {
-			// L'éditeur garde le heartbeat (verrouillage des articles, sauvegardes automatiques).
+			// The editor keeps the heartbeat (post locking, autosaves).
 			global $pagenow;
 			if ( is_admin() && in_array( $pagenow, array( 'post.php', 'post-new.php' ), true ) ) {
 				return;

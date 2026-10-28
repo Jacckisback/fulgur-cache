@@ -4,11 +4,11 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Optimiseur IA : Claude analyse le serveur, la charge, le HTML et PageSpeed,
- * propose les meilleurs réglages, puis Fulgur les applique, mesure et annule si le score baisse.
+ * AI optimizer: Claude analyzes the server, load, HTML and PageSpeed,
+ * proposes the best settings, then Fulgur applies them, measures, and rolls back if the score drops.
  *
- * Chaque étape tourne en arrière-plan (WP-Cron) pour ne jamais dépasser les délais d'exécution
- * des hébergements mutualisés ; l'interface interroge /ai/status.
+ * Each step runs in the background (WP-Cron) so it never exceeds shared-hosting execution limits;
+ * the interface polls /ai/status.
  */
 class Ai {
 
@@ -22,7 +22,7 @@ class Ai {
 	const HOOK        = 'fulgur_ai_step';
 	const AUTOPILOT   = 'fulgur_ai_autopilot';
 
-	/** Réglages que l'IA n'a jamais le droit de modifier. */
+	/** Settings the AI is never allowed to change. */
 	const LOCKED = array( 'page_cache', 'profile', 'onboarding_done', 'cdn_enabled', 'cdn_url', 'cdn_exclusions', 'cloudflare_token', 'cloudflare_zone', 'ai_model', 'ai_auto', 'ai_psi' );
 
 	public function __construct() {
@@ -31,7 +31,7 @@ class Ai {
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* Clés API (hors réglages : jamais exportées ni renvoyées au navigateur) */
+	/* API keys (kept out of settings: never exported or sent to the browser) */
 	/* ------------------------------------------------------------------ */
 
 	public static function secret( $name ) {
@@ -87,7 +87,7 @@ class Ai {
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* Tâches en arrière-plan                                              */
+	/* Background jobs                                                     */
 	/* ------------------------------------------------------------------ */
 
 	public static function job() {
@@ -116,7 +116,7 @@ class Ai {
 	}
 
 	/**
-	 * Démarre une analyse complète (mode manual | suggest | auto).
+	 * Starts a full analysis (mode manual | suggest | auto).
 	 */
 	public static function start( $mode = 'manual' ) {
 		if ( '' === self::secret( 'anthropic' ) ) {
@@ -138,7 +138,7 @@ class Ai {
 	}
 
 	/**
-	 * Applique les changements choisis, puis lance la vérification.
+	 * Applies the selected changes, then starts verification.
 	 */
 	public static function apply( array $keys ) {
 		$job = self::job();
@@ -166,8 +166,8 @@ class Ai {
 	}
 
 	/**
-	 * Si WP-Cron ne s'est pas déclenché (cron désactivé, loopback bloqué), l'étape est exécutée
-	 * directement par la requête de suivi de l'interface.
+	 * If WP-Cron did not fire (cron disabled, loopback blocked), the step is run
+	 * directly by the interface's status request.
 	 */
 	public static function maybe_run_inline() {
 		$job = self::job();
@@ -235,7 +235,7 @@ class Ai {
 					}
 					$values['profile'] = 'ai';
 					Settings::update( $values );
-					// La purge et le préchargement s'exécutent à la fin de cette requête (Purge::flush).
+					// Purge and preload run at the end of this request (Purge::flush).
 					$job = self::next( $job, 'verify', __( 'Checking: new PageSpeed test on the optimized site…', 'fulgur-cache' ), 45 );
 					break;
 
@@ -269,10 +269,10 @@ class Ai {
 	}
 
 	/**
-	 * Mesure après application ; annule automatiquement si le site est plus lent ou a des erreurs JS.
+	 * Measures after applying; rolls back automatically if the site is slower or has JS errors.
 	 */
 	private static function verify( array $job ) {
-		// Réchauffe la page d'accueil (cache + images) avant la mesure.
+		// Warm up the home page (cache + images) before measuring.
 		wp_remote_get( home_url( '/' ), array( 'timeout' => 20, 'sslverify' => false ) );
 		$check = wp_remote_get( home_url( '/' ), array( 'timeout' => 20, 'sslverify' => false ) );
 		$ok    = ! is_wp_error( $check ) && 200 === wp_remote_retrieve_response_code( $check ) && false !== stripos( wp_remote_retrieve_body( $check ), '</html>' );
@@ -346,11 +346,11 @@ class Ai {
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* Appel à Claude                                                      */
+	/* Claude call                                                         */
 	/* ------------------------------------------------------------------ */
 
 	/**
-	 * @return array|\WP_Error Recommandations validées.
+	 * @return array|\WP_Error Validated recommendations.
 	 */
 	public static function analyze( array $report, $locale = 'en_US' ) {
 		$model   = Settings::get( 'ai_model' );
@@ -377,7 +377,7 @@ class Ai {
 				),
 			),
 		);
-		// Si un classifieur de sécurité refuse la requête, l'API relance sur le modèle de repli recommandé.
+		// If a safety classifier declines the request, the API retries on the recommended fallback model.
 		if ( in_array( $model, array( 'claude-opus-5-5', 'claude-sonnet-5-5' ), true ) ) {
 			$body['fallbacks']        = 'default';
 			$headers['anthropic-beta'] = 'server-side-fallback-2026-07-01';
@@ -437,7 +437,7 @@ class Ai {
 	}
 
 	/**
-	 * Ne garde que des changements valides, autorisés et réellement différents de l'existant.
+	 * Keeps only valid, allowed changes that actually differ from the current value.
 	 */
 	public static function validate_changes( array $changes ) {
 		$defaults = Settings::defaults();
@@ -597,7 +597,7 @@ class Ai {
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* Pilote automatique                                                  */
+	/* Autopilot                                                           */
 	/* ------------------------------------------------------------------ */
 
 	public static function schedule_autopilot() {

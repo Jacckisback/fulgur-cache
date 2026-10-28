@@ -4,8 +4,8 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Conversion AVIF/WebP : à l'upload, en masse depuis l'admin, et à la volée pour les images du thème.
- * Les variantes sont créées à côté de l'original : photo.jpg → photo.jpg.webp / photo.jpg.avif
+ * AVIF/WebP conversion: on upload, in bulk from the admin, and on the fly for theme images.
+ * Variants are created next to the original: photo.jpg → photo.jpg.webp / photo.jpg.avif
  */
 class Images {
 
@@ -58,7 +58,7 @@ class Images {
 	}
 
 	/**
-	 * URL de la variante si elle existe ; sinon met l'image en file d'attente et retourne ''.
+	 * Variant URL if it exists; otherwise queues the image and returns ''.
 	 */
 	public static function variant_url( $url, $format ) {
 		$clean = strtok( html_entity_decode( (string) $url ), '?#' );
@@ -82,7 +82,7 @@ class Images {
 		return '';
 	}
 
-	/* File d'attente ------------------------------------------------------ */
+	/* Queue --------------------------------------------------------------- */
 
 	/** @var array|null */
 	private static $queue = null;
@@ -121,7 +121,7 @@ class Images {
 			}
 		}
 		if ( $done && ! get_option( self::QUEUE ) ) {
-			// File terminée : les pages en cache sont régénérées avec les nouvelles variantes.
+			// Queue finished: cached pages are rebuilt with the new variants.
 			do_action( 'fulgur_images_converted', $done );
 		}
 		return $done;
@@ -140,7 +140,7 @@ class Images {
 	}
 
 	/**
-	 * Crée la variante. Si elle est plus lourde que l'original, un fichier vide est laissé comme marqueur.
+	 * Creates the variant. If it is heavier than the original, an empty file is left as a marker.
 	 */
 	public static function convert( $file, $format ) {
 		$dest = $file . '.' . $format;
@@ -153,7 +153,7 @@ class Images {
 		}
 		$quality = max( 30, min( 95, (int) Settings::get( 'image_quality' ) ) );
 		if ( 'avif' === $format ) {
-			$quality = max( 30, $quality - 15 ); // L'AVIF atteint la même qualité visuelle avec un réglage plus bas.
+			$quality = max( 30, $quality - 15 ); // AVIF reaches the same visual quality with a lower setting.
 		}
 
 		$data = self::encode_imagick( $file, $format, $quality );
@@ -164,7 +164,7 @@ class Images {
 			return false;
 		}
 		if ( strlen( $data ) >= filesize( $file ) ) {
-			@file_put_contents( $dest, '' ); // Marqueur : l'original est déjà optimal.
+			@file_put_contents( $dest, '' ); // Marker: the original is already optimal.
 			return false;
 		}
 		return Installer::atomic_write( $dest, $data );
@@ -228,7 +228,7 @@ class Images {
 		return $ok ? $data : null;
 	}
 
-	/* Hooks médiathèque ---------------------------------------------------- */
+	/* Media library hooks ------------------------------------------------- */
 
 	public function on_upload( $metadata, $attachment_id ) {
 		if ( ! Settings::get( 'next_gen_images' ) ) {
@@ -272,7 +272,7 @@ class Images {
 	}
 
 	/**
-	 * Conversion en masse (appelée par l'admin, par lots, avec barre de progression).
+	 * Bulk conversion (called by the admin, in batches, with a progress bar).
 	 */
 	public static function bulk( $offset, $limit = 5 ) {
 		$ids   = get_posts(

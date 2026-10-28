@@ -4,7 +4,7 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * CSS (minification, font-display) et Google Fonts (swap ou hébergement local RGPD).
+ * CSS (minification, font-display) and Google Fonts (swap or GDPR-friendly local hosting).
  */
 class Assets {
 
@@ -19,7 +19,7 @@ class Assets {
 	}
 
 	/**
-	 * Convertit une URL locale en chemin disque (ou null si externe/introuvable).
+	 * Converts a local URL into a disk path (or null if external/missing).
 	 */
 	public static function url_to_path( $url ) {
 		$url = html_entity_decode( (string) $url );
@@ -59,7 +59,7 @@ class Assets {
 	/* ------------------------------------------------------------------ */
 
 	public static function optimize_css( $html, $swap ) {
-		// Feuilles de style externes locales.
+		// Local external stylesheets.
 		$html = preg_replace_callback(
 			'#<link\b[^>]*\brel=["\']stylesheet["\'][^>]*>#i',
 			function ( $m ) use ( $swap ) {
@@ -76,7 +76,7 @@ class Assets {
 			$html
 		);
 
-		// Styles inline.
+		// Inline styles.
 		return preg_replace_callback(
 			'#(<style\b[^>]*>)(.*?)(</style>)#is',
 			function ( $m ) use ( $swap ) {
@@ -100,7 +100,7 @@ class Assets {
 	}
 
 	/**
-	 * Génère (une seule fois) la version minifiée et retourne son URL.
+	 * Generates the minified version (once) and returns its URL.
 	 */
 	private static function minified_file( $file, $original_url, $swap ) {
 		$hash = substr( md5( $file . filemtime( $file ) . filesize( $file ) . (int) $swap . FULGUR_VERSION ), 0, 12 );
@@ -126,7 +126,7 @@ class Assets {
 	}
 
 	/**
-	 * Les url() relatives doivent pointer vers le dossier d'origine une fois le fichier déplacé.
+	 * Relative url() must point to the original folder once the file is moved.
 	 */
 	public static function absolutize_urls( $css, $base_url ) {
 		$base_url = strtok( html_entity_decode( $base_url ), '?#' );
@@ -145,7 +145,7 @@ class Assets {
 					return $m[0];
 				}
 				$abs = $base_dir . $u;
-				// Résout les ../
+				// Resolve ../
 				$parts = wp_parse_url( $abs );
 				$path  = isset( $parts['path'] ) ? $parts['path'] : '/';
 				$segs  = array();
@@ -165,7 +165,7 @@ class Assets {
 	}
 
 	/**
-	 * Minificateur CSS sûr : chaînes protégées, calc() préservé.
+	 * Safe CSS minifier: strings protected, calc() preserved.
 	 */
 	public static function minify_css( $css ) {
 		$strings = array();
@@ -187,7 +187,7 @@ class Assets {
 	}
 
 	/**
-	 * Ajoute font-display:swap aux @font-face qui n'en ont pas (texte visible immédiatement).
+	 * Adds font-display:swap to @font-face rules that lack it (text visible immediately).
 	 */
 	public static function font_display( $css ) {
 		return preg_replace_callback(
@@ -242,7 +242,7 @@ class Assets {
 	}
 
 	/**
-	 * Télécharge la CSS Google Fonts et les fichiers woff2 pour les servir depuis le site (RGPD + 1 connexion en moins).
+	 * Downloads the Google Fonts CSS and woff2 files to serve them from the site (GDPR + one less connection).
 	 */
 	public static function localize_google_font( $url ) {
 		$hash = substr( md5( $url ), 0, 12 );
@@ -253,7 +253,7 @@ class Assets {
 		if ( is_file( $file ) ) {
 			return $base . '/gf-' . $hash . '.css';
 		}
-		// Évite de retenter en boucle une police qui échoue.
+		// Avoid retrying a failing font in a loop.
 		if ( get_transient( 'fulgur_gf_fail_' . $hash ) ) {
 			return null;
 		}

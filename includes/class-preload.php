@@ -4,7 +4,7 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Préchargement du cache : le premier visiteur ne tombe jamais sur une page froide.
+ * Cache preloading: the first visitor never hits a cold page.
  */
 class Preload {
 
@@ -18,7 +18,7 @@ class Preload {
 	}
 
 	/**
-	 * Toutes les URL publiques du site, des plus récemment modifiées aux plus anciennes.
+	 * All public URLs of the site, from most recently modified to oldest.
 	 */
 	public static function site_urls( $limit = 3000 ) {
 		$urls = array( home_url( '/' ) );
@@ -77,7 +77,7 @@ class Preload {
 			return;
 		}
 		$queue = (array) get_option( self::QUEUE, array() );
-		// Les URL modifiées passent en tête de file.
+		// Changed URLs jump to the front of the queue.
 		$queue = array_values( array_unique( array_merge( $urls, $queue ) ) );
 		update_option( self::QUEUE, $queue, false );
 		self::schedule( 2 );
@@ -87,7 +87,7 @@ class Preload {
 		if ( ! wp_next_scheduled( self::HOOK ) ) {
 			wp_schedule_single_event( time() + $delay, self::HOOK );
 		}
-		// Déclenche WP-Cron tout de suite sans attendre un visiteur.
+		// Trigger WP-Cron right away without waiting for a visitor.
 		if ( ! defined( 'DISABLE_WP_CRON' ) || ! DISABLE_WP_CRON ) {
 			spawn_cron();
 		}
@@ -112,7 +112,7 @@ class Preload {
 				self::fetch( $url, self::UA_MOBILE );
 			}
 			++$done;
-			usleep( 150000 ); // Ménage le serveur (hébergements mutualisés).
+			usleep( 150000 ); // Go easy on the server (shared hosting).
 		}
 
 		update_option( self::QUEUE, $queue, false );

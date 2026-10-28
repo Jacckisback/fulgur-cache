@@ -4,7 +4,7 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * API REST utilisée par l'interface d'administration (fulgur/v1).
+ * REST API used by the admin interface (fulgur/v1).
  */
 class Rest {
 
@@ -74,7 +74,7 @@ class Rest {
 	}
 
 	/**
-	 * Le jeton Cloudflare n'est jamais renvoyé au navigateur.
+	 * The Cloudflare token is never sent back to the browser.
 	 */
 	private static function public_settings() {
 		$s                     = Settings::all();
@@ -91,7 +91,7 @@ class Rest {
 		if ( isset( $values['cloudflare_token'] ) && '••••••••' === $values['cloudflare_token'] ) {
 			unset( $values['cloudflare_token'] );
 		}
-		// Toute modification manuelle d'un réglage fait passer en profil « personnalisé ».
+		// Any manual change to a setting switches to the "custom" profile.
 		$current = Settings::all();
 		foreach ( $values as $key => $value ) {
 			if ( ! in_array( $key, array( 'profile', 'onboarding_done' ), true ) && array_key_exists( $key, $current ) && (string) $current[ $key ] !== (string) ( is_bool( $current[ $key ] ) ? (bool) $value : $value ) ) {

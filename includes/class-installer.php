@@ -4,8 +4,8 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Installe/retire le drop-in advanced-cache.php, la constante WP_CACHE,
- * le fichier de configuration lu avant WordPress et les règles serveur.
+ * Installs/removes the advanced-cache.php drop-in, the WP_CACHE constant,
+ * the configuration file read before WordPress, and the server rules.
  */
 class Installer {
 
@@ -32,7 +32,7 @@ class Installer {
 	}
 
 	/**
-	 * Configuration exportée en PHP pur pour le drop-in (aucune requête SQL à la lecture).
+	 * Configuration exported as plain PHP for the drop-in (no SQL query when reading it).
 	 */
 	public static function write_config() {
 		$s      = Settings::all();
@@ -106,7 +106,7 @@ class Installer {
 	}
 
 	/**
-	 * Ajoute ou retire define( 'WP_CACHE', true ) dans wp-config.php.
+	 * Adds or removes define( 'WP_CACHE', true ) in wp-config.php.
 	 */
 	public static function set_wp_cache( $enable ) {
 		if ( $enable && defined( 'WP_CACHE' ) && WP_CACHE ) {
@@ -119,7 +119,7 @@ class Installer {
 		$config = (string) file_get_contents( $file );
 		$line   = "define( 'WP_CACHE', true ); // Fulgur Cache";
 
-		// Retire toute définition existante de WP_CACHE.
+		// Remove any existing WP_CACHE definition.
 		$clean = preg_replace( '/^\s*define\(\s*[\'"]WP_CACHE[\'"]\s*,[^)]*\)\s*;.*$\R?/mi', '', $config );
 
 		if ( $enable ) {
@@ -137,7 +137,7 @@ class Installer {
 	}
 
 	/**
-	 * Règles Apache/LiteSpeed : service statique sans PHP + compression + cache navigateur.
+	 * Apache/LiteSpeed rules: static serving without PHP + compression + browser cache.
 	 */
 	public static function htaccess_rules() {
 		$s         = Settings::all();
@@ -242,7 +242,7 @@ class Installer {
 		if ( ( file_exists( $file ) && ! is_writable( $file ) ) || ( ! file_exists( $file ) && ! is_writable( dirname( $file ) ) ) ) {
 			return false;
 		}
-		// Nos règles doivent passer AVANT celles de WordPress.
+		// Our rules must come BEFORE WordPress's.
 		$content = file_exists( $file ) ? (string) file_get_contents( $file ) : '';
 		$content = preg_replace( '/# BEGIN ' . self::HTACCESS_MARKER . '.*?# END ' . self::HTACCESS_MARKER . '\R*/s', '', $content );
 		$block   = '# BEGIN ' . self::HTACCESS_MARKER . "\n" . implode( "\n", self::htaccess_rules() ) . "\n# END " . self::HTACCESS_MARKER . "\n\n";
@@ -265,7 +265,7 @@ class Installer {
 	}
 
 	/**
-	 * Configuration Nginx à copier dans le bloc server (affichée dans l'admin).
+	 * Nginx configuration to paste into the server block (shown in the admin).
 	 */
 	public static function nginx_rules() {
 		$cache_rel = self::relative_to_root( FULGUR_CACHE_DIR );
@@ -317,7 +317,7 @@ NGINX;
 	}
 
 	/**
-	 * Écriture atomique : jamais de fichier à moitié écrit servi à un visiteur.
+	 * Atomic write: a half-written file is never served to a visitor.
 	 */
 	public static function atomic_write( $file, $content ) {
 		$tmp = $file . '.' . uniqid( 'tmp', true );

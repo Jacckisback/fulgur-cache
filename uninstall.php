@@ -1,7 +1,7 @@
 <?php
 /**
- * Désinstallation : supprime réglages, cache et configuration.
- * Les variantes WebP/AVIF des images sont conservées (elles ne gênent pas et évitent une reconversion).
+ * Uninstall: removes settings, cache and configuration.
+ * WebP/AVIF image variants are kept (they do no harm and avoid converting again).
  */
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 

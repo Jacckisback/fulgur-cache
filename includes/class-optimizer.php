@@ -4,24 +4,24 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Pipeline d'optimisation du HTML final.
- * Travaille par expressions régulières (plus rapide et moins destructeur que DOMDocument sur du HTML5).
+ * Optimization pipeline for the final HTML.
+ * Works with regular expressions (faster and less destructive than DOMDocument on HTML5).
  */
 class Optimizer {
 
-	/** @var string[] En-têtes Link à servir (103 Early Hints / preload). */
+	/** @var string[] Link headers to send (103 Early Hints / preload). */
 	public static $early_hints = array();
 
-	/** @var string[] Balises à injecter dans le <head>. */
+	/** @var string[] Tags to inject into the <head>. */
 	private $head = array();
 
-	/** @var string[] Scripts/styles à injecter avant </body>. */
+	/** @var string[] Scripts/styles to inject before </body>. */
 	private $footer = array();
 
 	/** @var array */
 	private $s;
 
-	/** @var array Zones protégées (scripts, styles, pre…). */
+	/** @var array Protected areas (scripts, styles, pre…). */
 	private $protected = array();
 
 	public function __construct() {
@@ -37,28 +37,28 @@ class Optimizer {
 
 		$html = apply_filters( 'fulgur_html_before', $html );
 
-		// 1. Polices et CSS.
+		// 1. Fonts and CSS.
 		$html = Assets::google_fonts( $html, $this->s['google_fonts'], $this->head );
 		if ( $this->s['minify_css'] ) {
 			$html = Assets::optimize_css( $html, (bool) $this->s['font_display_swap'] );
 		}
 
-		// 2. Médias (sur le HTML débarrassé des scripts/styles pour ne rien casser).
+		// 2. Media (on the HTML stripped of scripts/styles so nothing breaks).
 		$html = $this->protect( $html );
 		$html = Media::process( $html, $this->s, $this->head, $this->footer );
 		$html = $this->restore( $html );
 
-		// 3. CSS critique / suppression du CSS inutilisé (sur le HTML final, avant transformation des scripts).
+		// 3. Critical CSS / unused CSS removal (on the final HTML, before scripts are transformed).
 		if ( 'off' !== $this->s['css_mode'] ) {
 			$html = Used_Css::process( $html, $this->s['css_mode'], Settings::lines( 'css_safelist' ) );
 		}
 
-		// 3 bis. JavaScript.
+		// 3b. JavaScript.
 		if ( $this->s['delay_js'] || $this->s['defer_js'] ) {
 			$html = $this->scripts( $html );
 		}
 
-		// 4. Préconnexions et préchargement intelligent.
+		// 4. Preconnects and smart preloading.
 		$this->resource_hints();
 		$this->speculation();
 
@@ -81,7 +81,7 @@ class Optimizer {
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* JavaScript : report (defer) et chargement différé à l'interaction   */
+	/* JavaScript: defer and delay until interaction                      */
 	/* ------------------------------------------------------------------ */
 
 	private function scripts( $html ) {
@@ -90,7 +90,7 @@ class Optimizer {
 		$delay_exclusions = array_merge( array( 'fulgur-' ), Settings::lines( 'delay_exclusions' ) );
 		$defer_exclusions = array_merge( array( 'fulgur-' ), Settings::lines( 'defer_exclusions' ) );
 
-		// Poignées (handles WordPress) exclues : leurs scripts inline liés (-js-extra, -js-before…) doivent suivre.
+		// Excluded WordPress handles: their attached inline scripts (-js-extra, -js-before…) must follow.
 		$locked_delay = array();
 		$locked_defer = array();
 		if ( preg_match_all( '#<script\b[^>]*\bsrc=["\']([^"\']+)["\'][^>]*>#i', $html, $m, PREG_SET_ORDER ) ) {
@@ -135,7 +135,7 @@ class Optimizer {
 					return $m[0];
 				}
 
-				// a) Chargement à la première interaction utilisateur.
+				// a) Load on first user interaction.
 				if ( $delay && ! self::matches( $subject, $delay_exclusions ) && ! isset( $locked_delay[ $handle ] ) ) {
 					$delayed = true;
 					$attrs   = preg_replace( '/\s+type=["\']?[^"\'\s>]+["\']?/i', '', $attrs );
@@ -148,7 +148,7 @@ class Optimizer {
 					return '<script type="fulgur/delay"' . $attrs . '>' . $content . '</script>';
 				}
 
-				// b) Report de l'exécution après le parsing HTML, ordre préservé.
+				// b) Defer execution until after HTML parsing, order preserved.
 				if ( $defer && 'module' !== $type && ! self::matches( $subject, $defer_exclusions ) && ! isset( $locked_defer[ $handle ] ) ) {
 					if ( $has_src ) {
 						if ( preg_match( '/\b(defer|async)\b/i', $attrs ) ) {
@@ -159,7 +159,7 @@ class Optimizer {
 					if ( false !== stripos( $content, 'document.write' ) ) {
 						return $m[0];
 					}
-					// Un script inline ne peut pas être "defer" : on le transforme en data-URI pour garder l'ordre.
+					// An inline script cannot be "defer": turn it into a data URI to keep the order.
 					return '<script' . $attrs . ' defer src="data:text/javascript;base64,' . base64_encode( $content ) . '"></script>';
 				}
 
@@ -185,7 +185,7 @@ class Optimizer {
 	}
 
 	/**
-	 * Chargeur des scripts différés : exécute dans l'ordre d'origine puis rejoue DOMContentLoaded et load.
+	 * Delayed script loader: runs scripts in their original order, then replays DOMContentLoaded and load.
 	 */
 	private static function delay_loader( $timeout ) {
 		$js = <<<'JS'
@@ -212,7 +212,7 @@ JS;
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* Préconnexions, Speculation Rules                                    */
+	/* Preconnects, Speculation Rules                                     */
 	/* ------------------------------------------------------------------ */
 
 	private function resource_hints() {
@@ -230,7 +230,7 @@ JS;
 		if ( 'off' === $mode ) {
 			return;
 		}
-		// WordPress 6.8+ gère nativement les Speculation Rules : on règle simplement sa configuration (voir Plugin::core_speculation).
+		// WordPress 6.8+ handles Speculation Rules natively: we only adjust its configuration (see Tweaks::core_speculation).
 		if ( ! function_exists( 'wp_get_speculation_rules_configuration' ) ) {
 			$this->head[] = '<script type="speculationrules">' . wp_json_encode( self::speculation_rules( $mode, $this->s['speculation_eagerness'] ) ) . '</script>';
 		}
@@ -273,7 +273,7 @@ JS;
 	}
 
 	/**
-	 * Préchargement au survol pour les navigateurs sans Speculation Rules (Safari, Firefox).
+	 * Hover prefetching for browsers without Speculation Rules (Safari, Firefox).
 	 */
 	private static function instant_fallback() {
 		return <<<'JS'
@@ -287,13 +287,13 @@ JS;
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* Injection et utilitaires                                            */
+	/* Injection and utilities                                            */
 	/* ------------------------------------------------------------------ */
 
 	private function inject( $html ) {
 		$head = array_unique( $this->head );
 		if ( $head ) {
-			// Le plus haut possible dans le <head>, juste après <meta charset>.
+			// As high as possible in the <head>, right after <meta charset>.
 			if ( preg_match( '/<meta\s+charset=[^>]*>/i', $html, $m, PREG_OFFSET_CAPTURE ) ) {
 				$pos  = $m[0][1] + strlen( $m[0][0] );
 				$html = substr( $html, 0, $pos ) . implode( '', $head ) . substr( $html, $pos );
@@ -328,7 +328,7 @@ JS;
 	}
 
 	/**
-	 * Minification HTML conservatrice (préserve les espaces significatifs entre éléments inline).
+	 * Conservative HTML minification (keeps meaningful whitespace between inline elements).
 	 */
 	public static function minify_html( $html ) {
 		$keep = array();
@@ -341,11 +341,11 @@ JS;
 			},
 			$html
 		);
-		// Commentaires HTML (sauf ceux des outils qui en dépendent).
+		// HTML comments (except those some tools rely on).
 		$html = preg_replace( '/<!--(?!\s*(?:\[if|<!|noindex|\/noindex|esi|fulgur|google_ad|ko\s|\/ko))[\s\S]*?-->/', '', $html );
 		$html  = preg_replace( '/\s{2,}/', ' ', $html );
 		$html  = preg_replace( '/>\s+</', '> <', $html );
-		// Les espaces autour des balises de bloc n'ont aucun effet visuel.
+		// Whitespace around block-level tags has no visual effect.
 		$block = 'html|head|body|meta|link|title|base|div|section|article|header|footer|nav|main|aside|ul|ol|li|dl|dt|dd|p|h[1-6]|table|thead|tbody|tfoot|tr|td|th|form|fieldset|figure|figcaption|picture|source|br|hr|option|!DOCTYPE';
 		$html  = preg_replace( '#\s*(</?(?:' . $block . ')\b[^>]*>)\s*#i', '$1', $html );
 		return strtr( $html, $keep );

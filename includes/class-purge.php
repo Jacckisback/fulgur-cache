@@ -4,8 +4,8 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Purge intelligente : seules les pages réellement impactées par une modification sont vidées,
- * puis immédiatement re-préchargées.
+ * Smart purge: only the pages actually affected by a change are cleared,
+ * then preloaded again right away.
  */
 class Purge {
 
@@ -25,12 +25,12 @@ class Purge {
 		add_action( 'edited_term', array( $this, 'term' ), 10, 3 );
 		add_action( 'delete_term', array( $this, 'term' ), 10, 3 );
 
-		// Changements globaux → purge complète.
+		// Site-wide changes → full purge.
 		foreach ( array( 'switch_theme', 'customize_save_after', 'wp_update_nav_menu', 'update_option_sidebars_widgets', 'activated_plugin', 'deactivated_plugin', 'upgrader_process_complete', 'update_option_permalink_structure', 'update_option_blogname', 'update_option_blogdescription', 'update_option_site_icon', 'update_option_theme_mods_' . get_option( 'stylesheet' ), 'fulgur_settings_updated' ) as $hook ) {
 			add_action( $hook, array( $this, 'everything' ) );
 		}
 
-		// WooCommerce : stock et prix.
+		// WooCommerce: stock and prices.
 		add_action( 'woocommerce_product_set_stock', array( $this, 'wc_product' ) );
 		add_action( 'woocommerce_variation_set_stock', array( $this, 'wc_product' ) );
 		add_action( 'woocommerce_product_set_stock_status', array( $this, 'post' ) );
@@ -59,7 +59,7 @@ class Purge {
 		$permalink = get_permalink( $post );
 		if ( $permalink ) {
 			$this->urls[] = $permalink;
-			// L'ancienne URL si le slug a changé.
+			// The old URL if the slug changed.
 			$this->urls[] = str_replace( '__trashed', '', $permalink );
 		}
 		$this->urls[] = home_url( '/' );
@@ -89,7 +89,7 @@ class Purge {
 			}
 		}
 
-		// Articles voisins (liens précédent/suivant).
+		// Adjacent posts (previous/next links).
 		if ( 'post' === $post->post_type ) {
 			$backup          = isset( $GLOBALS['post'] ) ? $GLOBALS['post'] : null;
 			$GLOBALS['post'] = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride
@@ -131,7 +131,7 @@ class Purge {
 	}
 
 	/**
-	 * Exécution groupée en fin de requête (une seule purge même si 50 hooks se déclenchent).
+	 * Runs once at the end of the request (a single purge even if 50 hooks fire).
 	 */
 	public function flush() {
 		if ( $this->all ) {

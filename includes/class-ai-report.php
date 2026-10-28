@@ -4,8 +4,8 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Rapport technique envoyé à l'IA : serveur, charge, WordPress, réglages, HTML et PageSpeed.
- * Aucune donnée personnelle ni contenu éditorial n'est transmis.
+ * Technical report sent to the AI: server, load, WordPress, settings, HTML and PageSpeed.
+ * No personal data or editorial content is sent.
  */
 class Ai_Report {
 
@@ -113,7 +113,7 @@ class Ai_Report {
 	}
 
 	/**
-	 * Analyse du HTML d'origine (sans optimisation) de la page d'accueil.
+	 * Audits the original (unoptimized) HTML of the home page.
 	 */
 	private static function html_audit() {
 		$res = wp_remote_get(
@@ -185,7 +185,7 @@ class Ai_Report {
 	}
 
 	/**
-	 * Google PageSpeed Insights (Lighthouse) — résumé compact des métriques et opportunités.
+	 * Google PageSpeed Insights (Lighthouse) — compact summary of metrics and opportunities.
 	 */
 	public static function pagespeed( $url, $strategy ) {
 		$key  = Ai::secret( 'psi' );

@@ -4,7 +4,7 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Vérifications automatiques : chaque problème est expliqué avec sa solution.
+ * Automatic checks: each issue comes with an explanation and its fix.
  */
 class Diagnostics {
 
@@ -49,18 +49,18 @@ class Diagnostics {
 			}
 		}
 
-		// Droits d'écriture.
+		// Write permissions.
 		wp_mkdir_p( FULGUR_CACHE_DIR );
 		$checks[] = is_writable( FULGUR_CACHE_DIR )
 			? self::item( 'writable', 'ok', __( 'Cache folder is writable', 'fulgur-cache' ), FULGUR_CACHE_DIR )
 			: self::item( 'writable', 'error', __( 'Cache folder is not writable', 'fulgur-cache' ), sprintf( __( 'Give write permissions (755) to %s', 'fulgur-cache' ), FULGUR_CACHE_DIR ) );
 
-		// Permaliens.
+		// Permalinks.
 		$checks[] = get_option( 'permalink_structure' )
 			? self::item( 'permalinks', 'ok', __( 'Pretty permalinks enabled', 'fulgur-cache' ), __( 'Clean URLs make static caching possible.', 'fulgur-cache' ) )
 			: self::item( 'permalinks', 'error', __( '“Plain” permalinks', 'fulgur-cache' ), __( 'Settings → Permalinks: choose “Post name”. Without it, the cache cannot work.', 'fulgur-cache' ) );
 
-		// Serveur web.
+		// Web server.
 		if ( Installer::is_apache() ) {
 			$htaccess = get_home_path() . '.htaccess';
 			$has      = is_file( $htaccess ) && false !== strpos( (string) file_get_contents( $htaccess ), '# BEGIN ' . Installer::HTACCESS_MARKER );
@@ -81,7 +81,7 @@ class Diagnostics {
 			? self::item( 'webp', 'ok', __( 'WebP conversion available', 'fulgur-cache' ), Images::supports( 'avif' ) ? __( 'AVIF is available too.', 'fulgur-cache' ) : __( 'AVIF unavailable on this server (Imagick or PHP 8.1+ with libavif required).', 'fulgur-cache' ) )
 			: self::item( 'webp', 'warning', __( 'WebP conversion unavailable', 'fulgur-cache' ), __( 'Neither GD with WebP nor Imagick is available. Contact your host.', 'fulgur-cache' ) );
 
-		// Cache objet.
+		// Object cache.
 		$checks[] = wp_using_ext_object_cache()
 			? self::item( 'object', 'ok', __( 'Persistent object cache active', 'fulgur-cache' ), __( 'Redis/Memcached speeds up the admin and uncached pages.', 'fulgur-cache' ) )
 			: self::item( 'object', 'info', __( 'No persistent object cache', 'fulgur-cache' ), __( 'If your host offers Redis, enable it: the admin and WooCommerce will be much faster.', 'fulgur-cache' ) );
@@ -91,7 +91,7 @@ class Diagnostics {
 			? self::item( 'php', 'ok', 'PHP ' . PHP_VERSION, __( 'Modern and fast version.', 'fulgur-cache' ) )
 			: self::item( 'php', 'warning', sprintf( __( 'PHP %s is outdated', 'fulgur-cache' ), PHP_VERSION ), __( 'Switch to PHP 8.2 or later with your host: up to 30% faster uncached pages.', 'fulgur-cache' ) );
 
-		// Conflits.
+		// Conflicts.
 		$active    = (array) get_option( 'active_plugins', array() );
 		$conflicts = array();
 		foreach ( self::CONFLICTS as $file => $name ) {
@@ -116,7 +116,7 @@ class Diagnostics {
 	}
 
 	/**
-	 * Mesure du temps de réponse serveur (TTFB) sans cache puis avec cache.
+	 * Measures server response time (TTFB) without cache, then with cache.
 	 */
 	public static function speed_test() {
 		$url    = home_url( '/' );
@@ -127,7 +127,7 @@ class Diagnostics {
 		);
 		$before = self::time_request( add_query_arg( 'fulgur_bypass', wp_rand(), $url ), $args );
 
-		// S'assure que la page est en cache, puis mesure.
+		// Make sure the page is cached, then measure.
 		self::time_request( $url, $args );
 		$after = self::time_request( $url, $args );
 

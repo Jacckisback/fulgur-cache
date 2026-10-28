@@ -1,4 +1,4 @@
-/* Fulgur Cache — interface d'administration */
+/* Fulgur Cache — admin interface */
 .fulgur-wrap {
 	--f-bg: #f6f7fb;
 	--f-card: #fff;
@@ -27,7 +27,7 @@
 .fulgur-wrap h1, .fulgur-wrap h2, .fulgur-wrap h3 { color: var(--f-text); margin: 0; }
 .fulgur-loading { padding: 60px; text-align: center; color: var(--f-muted); }
 
-/* En-tête */
+/* Header */
 .fulgur-header {
 	display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
 	padding: 18px 32px; background: var(--f-card); border-bottom: 1px solid var(--f-border);
@@ -49,7 +49,7 @@
 .fulgur-status.is-off { background: var(--f-bad-soft); color: var(--f-bad); }
 .fulgur-actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
 
-/* Boutons */
+/* Buttons */
 .fulgur-btn {
 	display: inline-flex; align-items: center; justify-content: center; gap: 8px;
 	height: 38px; padding: 0 16px; border-radius: 10px; border: 1px solid transparent;
@@ -76,7 +76,7 @@
 	border: 2px solid currentColor; border-right-color: transparent; animation: fulgur-rot .7s linear infinite;
 }
 
-/* Mise en page */
+/* Layout */
 .fulgur-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 28px; padding: 28px 32px 120px; max-width: 1280px; }
 .fulgur-nav { display: flex; flex-direction: column; gap: 2px; position: sticky; top: 120px; align-self: start; }
 .fulgur-nav a {
@@ -91,7 +91,7 @@
 .fulgur-main { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
 .fulgur-tab-head h2 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
 
-/* Héros */
+/* Hero */
 .fulgur-hero {
 	position: relative; overflow: hidden; border-radius: 18px; padding: 28px 30px; color: #fff;
 	background: radial-gradient(circle at 85% 20%, rgba(245, 158, 11, .45), transparent 45%), linear-gradient(135deg, #4c1d95, #6d28d9 50%, #7c3aed);
@@ -123,7 +123,7 @@
 .fulgur-kpi.is-good .value { color: var(--f-good); }
 .fulgur-kpi.is-bad .value { color: var(--f-bad); }
 
-/* Cartes et champs */
+/* Cards and fields */
 .fulgur-card { background: var(--f-card); border-radius: var(--f-radius); box-shadow: var(--f-shadow); padding: 6px 24px 10px; }
 .fulgur-card-head { padding: 18px 0 8px; }
 .fulgur-card-head h3 { font-size: 16px; font-weight: 700; }
@@ -150,7 +150,7 @@
 .fulgur-risk.is-moderate { background: var(--f-warn-soft); color: var(--f-warn); }
 .fulgur-risk.is-advanced { background: var(--f-bad-soft); color: var(--f-bad); }
 
-/* Interrupteur */
+/* Toggle switch */
 .fulgur-switch { position: relative; display: inline-block; width: 46px; height: 26px; cursor: pointer; }
 .fulgur-switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; z-index: 1; }
 .fulgur-switch span { position: absolute; inset: 0; background: #d1d5db; border-radius: 99px; transition: background .2s; }
@@ -162,7 +162,7 @@
 .fulgur-switch input:checked + span::after { transform: translateX(20px); }
 .fulgur-switch input:focus-visible + span { box-shadow: 0 0 0 3px var(--f-accent-soft); }
 
-/* Profils */
+/* Profiles */
 .fulgur-profiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: 8px 0 16px; }
 .fulgur-profile {
 	position: relative; text-align: left; display: flex; flex-direction: column; gap: 6px; padding: 18px;
@@ -188,7 +188,7 @@
 .fulgur-checks .is-error .ico { background: var(--f-bad-soft); color: var(--f-bad); }
 .fulgur-checks .is-info .ico { background: #eff6ff; color: #2563eb; }
 
-/* Blocs divers */
+/* Misc blocks */
 .fulgur-inline { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-top: 1px solid #f0f1f4; flex-wrap: wrap; }
 .fulgur-inline > div { flex: 1; min-width: 220px; }
 .fulgur-inline p { margin: 4px 0 0; color: var(--f-muted); font-size: 13px; }
@@ -204,7 +204,7 @@
 .fulgur-db .count.has { color: var(--f-accent); }
 .fulgur-code { background: #0f172a; color: #e2e8f0; padding: 16px; border-radius: 10px; overflow: auto; font-size: 12px; line-height: 1.6; max-height: 320px; }
 
-/* Barre d'enregistrement */
+/* Save bar */
 .fulgur-savebar {
 	position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 140%); z-index: 100;
 	display: flex; align-items: center; gap: 12px; padding: 10px 10px 10px 20px; border-radius: 14px;
@@ -243,7 +243,7 @@
 .fulgur-result .big { display: block; font-size: 56px; font-weight: 800; letter-spacing: -.03em; background: linear-gradient(135deg, var(--f-accent), var(--f-accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .fulgur-result p { margin: 0; font-size: 15px; }
 
-/* Optimiseur IA */
+/* AI optimizer */
 .fulgur-btn.is-gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #3b0764; border: 0; }
 .fulgur-btn.is-gold:hover { background: #fcd34d; color: #3b0764; }
 .fulgur-ai-intro { padding: 4px 0 16px; color: #374151; line-height: 1.6; }

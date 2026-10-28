@@ -4,7 +4,7 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Nettoyage de la base de données (manuel ou hebdomadaire).
+ * Database cleanup (manual or weekly).
  */
 class Database {
 

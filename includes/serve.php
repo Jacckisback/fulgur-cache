@@ -1,7 +1,7 @@
 <?php
 /**
- * Moteur de service du cache, chargé AVANT WordPress par le drop-in advanced-cache.php.
- * Ce fichier ne doit dépendre d'aucune fonction WordPress.
+ * Cache serving engine, loaded BEFORE WordPress by the advanced-cache.php drop-in.
+ * This file must not depend on any WordPress function.
  */
 
 if ( class_exists( 'Fulgur_Serve', false ) ) {
@@ -13,7 +13,7 @@ class Fulgur_Serve {
 	/** @var array|null */
 	private static $config = null;
 
-	/** Raison du contournement du cache (pour l'en-tête de debug). */
+	/** Reason the cache was bypassed (for the debug header). */
 	public static $bypass = '';
 
 	const BYPASS_COOKIES = array(
@@ -63,7 +63,7 @@ class Fulgur_Serve {
 	}
 
 	/**
-	 * Supprime les paramètres de tracking. Retourne null si d'autres paramètres subsistent (non cachable).
+	 * Strips tracking parameters. Returns null if other parameters remain (not cacheable).
 	 */
 	public static function clean_query( array $cfg ) {
 		if ( empty( $_GET ) ) {
@@ -75,7 +75,7 @@ class Fulgur_Serve {
 	}
 
 	/**
-	 * Retourne la raison de ne pas utiliser le cache, ou '' si la requête est cachable.
+	 * Returns why the cache must not be used, or '' if the request is cacheable.
 	 */
 	public static function bypass_reason( array $cfg ) {
 		if ( empty( $cfg['page_cache'] ) ) {
@@ -132,7 +132,7 @@ class Fulgur_Serve {
 	}
 
 	/**
-	 * Correspondance d'un motif d'exclusion : sous-chaîne, joker (*) ou regex (#...#).
+	 * Matches an exclusion pattern: substring, wildcard (*) or regex (#...#).
 	 */
 	public static function match( $pattern, $subject ) {
 		if ( '#' === $pattern[0] && strlen( $pattern ) > 2 && '#' === substr( $pattern, -1 ) ) {
@@ -146,7 +146,7 @@ class Fulgur_Serve {
 	}
 
 	/**
-	 * Dossier de cache correspondant à une URL (ou à la requête courante).
+	 * Cache folder for a URL (or for the current request).
 	 */
 	public static function dir( $cache_dir, $host = null, $path = null ) {
 		if ( null === $path ) {
@@ -173,7 +173,7 @@ class Fulgur_Serve {
 	}
 
 	/**
-	 * Comptage échantillonné (1 page sur 10) pour mesurer la charge sans ralentir le service.
+	 * Sampled counting (1 page in 10) to measure load without slowing serving down.
 	 */
 	private static function sample_hit( array $cfg ) {
 		if ( 1 !== mt_rand( 1, 10 ) ) {
@@ -186,7 +186,7 @@ class Fulgur_Serve {
 	}
 
 	/**
-	 * Point d'entrée du drop-in : sert la page depuis le disque si possible.
+	 * Drop-in entry point: serves the page from disk when possible.
 	 */
 	public static function serve( $config_dir ) {
 		$cfg = self::config( $config_dir );
@@ -207,7 +207,7 @@ class Fulgur_Serve {
 		$mtime    = (int) filemtime( $file );
 		$lifespan = isset( $cfg['lifespan'] ) ? (int) $cfg['lifespan'] : 0;
 		if ( $lifespan > 0 && ( time() - $mtime ) > $lifespan ) {
-			return; // Expiré : WordPress régénère la page.
+			return; // Expired: WordPress regenerates the page.
 		}
 
 		$encoding = isset( $_SERVER['HTTP_ACCEPT_ENCODING'] ) ? (string) $_SERVER['HTTP_ACCEPT_ENCODING'] : '';

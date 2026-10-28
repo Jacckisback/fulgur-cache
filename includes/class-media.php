@@ -4,7 +4,7 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Images et iframes dans le HTML : lazy-load, dimensions (CLS), LCP prioritaire, AVIF/WebP, façades YouTube.
+ * Images and iframes in the HTML: lazy-loading, dimensions (CLS), prioritized LCP, AVIF/WebP, YouTube facades.
  */
 class Media {
 
@@ -40,7 +40,7 @@ class Media {
 					list( $tag, $picture ) = self::next_gen( $tag, $s['image_format'] );
 				}
 
-				// Image LCP : la première image "de contenu" en haut de page.
+				// LCP image: the first "content" image at the top of the page.
 				$is_lcp = false;
 				if ( $has_priority ) {
 					$is_lcp = (bool) preg_match( '/fetchpriority=["\']high["\']/i', $tag );
@@ -126,7 +126,7 @@ class Media {
 	}
 
 	/**
-	 * Logos, icônes, avatars et petites images ne sont jamais l'élément LCP.
+	 * Logos, icons, avatars and small images are never the LCP element.
 	 */
 	private static function is_decorative( $tag ) {
 		if ( preg_match( '/(logo|icon|avatar|emoji|badge|flag|spinner|loader)/i', self::attr( $tag, 'class' ) . ' ' . self::attr( $tag, 'src' ) . ' ' . self::attr( $tag, 'alt' ) ) ) {
@@ -165,10 +165,10 @@ class Media {
 	}
 
 	/**
-	 * Mode "webp" : remplacement direct des URL (97 % des navigateurs, aucun impact CSS).
-	 * Mode "avif" : <picture> AVIF → WebP → original.
+	 * "webp" mode: direct URL replacement (97% of browsers, no CSS impact).
+	 * "avif" mode: <picture> AVIF → WebP → original.
 	 *
-	 * @return array [ balise img, gabarit picture|null ]
+	 * @return array [ img tag, picture template|null ]
 	 */
 	private static function next_gen( $tag, $format ) {
 		$src    = self::attr( $tag, 'src' );
@@ -200,7 +200,7 @@ class Media {
 	}
 
 	/**
-	 * Convertit un srcset complet ; retourne '' si une seule taille manque (évite les mélanges).
+	 * Converts a whole srcset; returns '' if a single size is missing (avoids mixing formats).
 	 */
 	private static function srcset_variant( $srcset, $format ) {
 		$out = array();
@@ -219,7 +219,7 @@ class Media {
 		return implode( ', ', $out );
 	}
 
-	/* Utilitaires d'attributs ------------------------------------------- */
+	/* Attribute helpers ------------------------------------------------- */
 
 	public static function attr( $tag, $name ) {
 		if ( preg_match( '/\s' . preg_quote( $name, '/' ) . '\s*=\s*(["\'])(.*?)\1/is', $tag, $m ) ) {

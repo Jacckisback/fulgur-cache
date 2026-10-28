@@ -4,7 +4,7 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Interface d'administration, barre d'admin et actions rapides.
+ * Admin interface, admin bar and quick actions.
  */
 class Admin {
 
@@ -22,7 +22,7 @@ class Admin {
 	}
 
 	/**
-	 * La barre d'admin est aussi affichée sur le front : on l'enregistre globalement.
+	 * The admin bar also shows on the front end, so it is registered globally.
 	 */
 	public static function register_admin_bar() {
 		add_action( 'admin_bar_menu', array( __CLASS__, 'admin_bar' ), 100 );

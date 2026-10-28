@@ -4,7 +4,7 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Réécriture CDN des fichiers statiques et purge Cloudflare.
+ * CDN rewriting of static files and Cloudflare purge.
  */
 class Cdn {
 
@@ -31,7 +31,7 @@ class Cdn {
 	}
 
 	/**
-	 * Purge Cloudflare (URL précises ou tout le cache). Non bloquant.
+	 * Cloudflare purge (specific URLs or the whole cache). Non-blocking.
 	 */
 	public static function cloudflare_purge( array $urls = array() ) {
 		$token = Settings::get( 'cloudflare_token' );

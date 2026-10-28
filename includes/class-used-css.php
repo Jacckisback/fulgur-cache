@@ -4,19 +4,19 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Suppression du CSS inutilisé et CSS critique, 100 % en PHP (aucun service externe).
+ * Unused CSS removal and critical CSS, 100% in PHP (no external service).
  *
- * Pour chaque page : inventaire des balises, classes, id et attributs présents dans le HTML,
- * puis seules les règles CSS qui peuvent s'y appliquer sont injectées en ligne dans le <head>.
- * Les feuilles complètes restent à leur place dans le document (l'ordre de la cascade est conservé) :
- * - mode "critical" : chargées en asynchrone juste après l'affichage ;
- * - mode "remove"   : chargées à la première interaction (gain maximal).
+ * For each page: inventory of the tags, classes, ids and attributes present in the HTML,
+ * then only the CSS rules that can apply are inlined in the <head>.
+ * Full stylesheets stay where they are in the document (cascade order is preserved):
+ * - "critical" mode: loaded asynchronously right after rendering;
+ * - "remove" mode:   loaded on first interaction (maximum gain).
  */
 class Used_Css {
 
-	const MAX_INLINE = 350000; // Au-delà, on garde les feuilles d'origine (thème anormalement lourd).
+	const MAX_INLINE = 350000; // Above this, keep the original stylesheets (abnormally heavy theme).
 
-	/** @var array Inventaire de la page. */
+	/** @var array Page inventory. */
 	private $tags = array();
 	private $classes = array();
 	private $ids = array();
@@ -68,7 +68,7 @@ class Used_Css {
 		foreach ( $sheets as $sheet ) {
 			$tree = self::parsed( $sheet['file'], $sheet['url'] );
 			if ( null === $tree ) {
-				return $html; // Feuille illisible : on ne prend aucun risque.
+				return $html; // Unreadable stylesheet: take no risk.
 			}
 			$css = $this->filter( $tree );
 			if ( '' !== $sheet['media'] && '' !== $css ) {
@@ -82,7 +82,7 @@ class Used_Css {
 			return $html;
 		}
 
-		// Remplacement des balises <link> (à leur position d'origine).
+		// Replace the <link> tags (at their original position).
 		$first = true;
 		foreach ( $sheets as $sheet ) {
 			$original = $sheet['media'] ? $sheet['media'] : 'all';
@@ -122,11 +122,11 @@ class Used_Css {
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* Inventaire du HTML                                                  */
+	/* HTML inventory                                                      */
 	/* ------------------------------------------------------------------ */
 
 	private function inventory( $html ) {
-		// Classes ajoutées dynamiquement par les scripts inline (classList.add('x'), addClass("x")…).
+		// Classes added dynamically by inline scripts (classList.add('x'), addClass("x")…).
 		if ( preg_match_all( '#<script\b[^>]*>(.*?)</script>#is', $html, $scripts ) ) {
 			foreach ( $scripts[1] as $js ) {
 				if ( preg_match_all( '/["\']([a-zA-Z_][\w-]{1,50}(?:\s+[a-zA-Z_][\w-]{1,50})*)["\']/', $js, $words ) ) {
@@ -172,7 +172,7 @@ class Used_Css {
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* Analyse CSS (mise en cache par fichier)                             */
+	/* CSS parsing (cached per file)                                      */
 	/* ------------------------------------------------------------------ */
 
 	private static function parsed( $file, $url ) {
@@ -188,7 +188,7 @@ class Used_Css {
 		if ( false === $css ) {
 			return null;
 		}
-		// Les fichiers déjà minifiés par Fulgur ont des URL absolues ; les autres sont corrigés ici.
+		// Files already minified by Fulgur have absolute URLs; others are fixed here.
 		if ( false === strpos( wp_normalize_path( $file ), wp_normalize_path( Assets::min_dir() ) ) ) {
 			$css = Assets::absolutize_urls( $css, $url );
 		}
@@ -199,7 +199,7 @@ class Used_Css {
 	}
 
 	/**
-	 * Analyseur CSS : produit un arbre de règles, blocs @ conditionnels et blocs bruts.
+	 * CSS parser: builds a tree of rules, conditional at-rule blocks and raw blocks.
 	 */
 	public static function parse( $css ) {
 		$i = 0;
@@ -245,7 +245,7 @@ class Used_Css {
 				++$i;
 				return $nodes;
 			}
-			// ';' : instruction de premier niveau (@import, @layer a, b;).
+			// ';': top-level statement (@import, @layer a, b;).
 			$stmt = trim( $buf );
 			if ( '' !== $stmt && 0 !== stripos( $stmt, '@charset' ) ) {
 				$nodes[] = array( 'stmt', $stmt );
@@ -296,7 +296,7 @@ class Used_Css {
 	}
 
 	/* ------------------------------------------------------------------ */
-	/* Filtrage                                                            */
+	/* Filtering                                                           */
 	/* ------------------------------------------------------------------ */
 
 	private function filter( array $nodes ) {
@@ -321,7 +321,7 @@ class Used_Css {
 					}
 					break;
 				case 'raw':
-					$out .= $node[1] . '{' . $node[2] . '}'; // @font-face, @keyframes… triés ensuite.
+					$out .= $node[1] . '{' . $node[2] . '}'; // @font-face, @keyframes… sorted out afterwards.
 					break;
 				case 'stmt':
 					$out .= $node[1] . ';';
@@ -332,7 +332,7 @@ class Used_Css {
 	}
 
 	/**
-	 * Découpe "a, b:is(c, d)" en sélecteurs, sans casser les parenthèses ni les crochets.
+	 * Splits "a, b:is(c, d)" into selectors without breaking parentheses or brackets.
 	 */
 	public static function split_selectors( $prelude ) {
 		$parts = array();
@@ -361,11 +361,11 @@ class Used_Css {
 	}
 
 	/**
-	 * Un sélecteur est conservé si chacun de ses éléments (balise, classe, id, attribut) existe dans la page.
-	 * Les pseudo-classes (:hover, :not(), :is()…) sont ignorées : approche volontairement prudente.
+	 * A selector is kept if each of its parts (tag, class, id, attribute) exists in the page.
+	 * Pseudo-classes (:hover, :not(), :is()…) are ignored: a deliberately cautious approach.
 	 */
 	public function selector_used( $sel ) {
-		// Attributs : le nom doit exister.
+		// Attributes: the name must exist.
 		if ( preg_match_all( '/\[\s*([\w:-]+)/', $sel, $am ) ) {
 			foreach ( $am[1] as $attr ) {
 				if ( ! isset( $this->attrs[ strtolower( $attr ) ] ) ) {
@@ -374,7 +374,7 @@ class Used_Css {
 			}
 		}
 		$sel = preg_replace( '/\[(?:[^\[\]"\']|"[^"]*"|\'[^\']*\')*\]/', '', $sel );
-		// Pseudo-classes / éléments, avec leurs arguments éventuels.
+		// Pseudo-classes / elements, with their arguments if any.
 		$sel = preg_replace( '/(?<!\\\\)::?[a-zA-Z-]+(\((?:[^()]|\((?:[^()]|\([^()]*\))*\))*\))?/', '', $sel );
 
 		if ( preg_match_all( '/([.#])((?:[\w-]|\\\\[0-9a-fA-F]{1,6}\s?|\\\\.)+)/', $sel, $tokens, PREG_SET_ORDER ) ) {
@@ -388,7 +388,7 @@ class Used_Css {
 				}
 			}
 		}
-		// Balises (début de chaque élément composé).
+		// Tags (start of each compound selector).
 		if ( preg_match_all( '/(?:^|[\s>+~])([a-zA-Z][a-zA-Z0-9-]*)/', $sel, $tm ) ) {
 			foreach ( $tm[1] as $tag ) {
 				$tag = strtolower( $tag );
@@ -421,7 +421,7 @@ class Used_Css {
 	}
 
 	/**
-	 * Ne garde que les @font-face et @keyframes réellement utilisés par le CSS conservé.
+	 * Keeps only the @font-face and @keyframes actually used by the kept CSS.
 	 */
 	private static function prune_at_rules( $css ) {
 		$blocks = array();
@@ -445,7 +445,7 @@ class Used_Css {
 			} else {
 				$keep = true;
 			}
-			// Dédoublonnage (même @font-face présent dans plusieurs feuilles).
+			// Deduplication (same @font-face present in several stylesheets).
 			if ( $keep && isset( $seen[ md5( $block ) ] ) ) {
 				$keep = false;
 			}

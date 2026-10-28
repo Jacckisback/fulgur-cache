@@ -4,7 +4,7 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Options, valeurs par défaut et profils prêts à l'emploi.
+ * Options, defaults and ready-made profiles.
  */
 class Settings {
 
@@ -15,10 +15,10 @@ class Settings {
 
 	public static function defaults() {
 		return array(
-			// Cache de page.
+			// Page cache.
 			'page_cache'           => true,
-			'cache_mobile'         => false, // Cache séparé mobile (thèmes non responsive uniquement).
-			'cache_lifespan'       => 10,    // Heures, 0 = illimité.
+			'cache_mobile'         => false, // Separate mobile cache (non-responsive themes only).
+			'cache_lifespan'       => 10,    // Hours, 0 = unlimited.
 			'cache_404'            => false,
 			'ignored_query_params' => "utm_source\nutm_medium\nutm_campaign\nutm_term\nutm_content\nutm_id\ngclid\nfbclid\nmsclkid\ndclid\nyclid\n_ga\nmc_cid\nmc_eid\nref",
 			'exclude_urls'         => "/cart/\n/checkout/\n/my-account/\n/panier/\n/commande/\n/mon-compte/\n/carrito/\n/finalizar-compra/\n/mi-cuenta/",
@@ -40,20 +40,20 @@ class Settings {
 			'defer_js'             => false,
 			'defer_exclusions'     => '',
 			'delay_js'             => false,
-			'delay_timeout'        => 0, // Secondes, 0 = uniquement à l'interaction.
+			'delay_timeout'        => 0, // Seconds, 0 = on interaction only.
 			'delay_exclusions'     => "fulgur-\nrecaptcha\ncookie\nconsent\ngtag/js\ngoogletagmanager",
 
-			// Médias.
+			// Media.
 			'lazy_images'          => true,
 			'lazy_iframes'         => true,
 			'youtube_facade'       => true,
-			'eager_images'         => 3, // Images en haut de page jamais différées.
+			'eager_images'         => 3, // Top-of-page images never lazy-loaded.
 			'image_dimensions'     => true,
 			'next_gen_images'      => true,
 			'image_quality'        => 78,
-			'image_format'         => 'webp', // webp (remplacement direct) | avif (<picture> AVIF + WebP).
+			'image_format'         => 'webp', // webp (direct replacement) | avif (<picture> AVIF + WebP).
 
-			// Préchargement.
+			// Preloading.
 			'preload_cache'        => true,
 			'speculation'          => 'prerender', // off | prefetch | prerender.
 			'speculation_eagerness'=> 'moderate',
@@ -61,7 +61,7 @@ class Settings {
 			'preconnect_domains'   => '',
 			'early_hints'          => true,
 
-			// Allègement de WordPress.
+			// WordPress cleanup.
 			'disable_emojis'       => true,
 			'disable_embeds'       => true,
 			'remove_jquery_migrate'=> false,
@@ -71,7 +71,7 @@ class Settings {
 			'dashicons_visitors'   => true,
 			'wc_cart_fragments'    => true,
 
-			// Base de données.
+			// Database.
 			'db_auto_clean'        => false,
 			'db_revisions_keep'    => 5,
 
@@ -83,7 +83,7 @@ class Settings {
 			'cloudflare_zone'      => '',
 
 			// Interface.
-			// Optimiseur IA (Claude).
+			// AI optimizer (Claude).
 			'ai_model'             => 'claude-opus-5-5',
 			'ai_auto'              => 'off', // off | suggest | auto.
 			'ai_psi'               => true,
@@ -94,7 +94,7 @@ class Settings {
 	}
 
 	/**
-	 * Profils appliqués en un clic.
+	 * One-click profiles.
 	 */
 	public static function profiles() {
 		return array(
@@ -162,7 +162,7 @@ class Settings {
 	}
 
 	/**
-	 * Valeurs autorisées des réglages à choix (utilisé aussi pour valider les propositions de l'IA).
+	 * Allowed values for choice settings (also used to validate the AI's proposals).
 	 */
 	public static function choices() {
 		return array(
@@ -191,10 +191,10 @@ class Settings {
 	}
 
 	/**
-	 * Fusionne, nettoie et enregistre les réglages.
+	 * Merges, sanitizes and saves the settings.
 	 *
-	 * @param array $values Nouvelles valeurs (partielles).
-	 * @return array Réglages complets.
+	 * @param array $values New values (partial).
+	 * @return array Full settings.
 	 */
 	public static function update( array $values ) {
 		$defaults = self::defaults();
@@ -245,7 +245,7 @@ class Settings {
 	}
 
 	/**
-	 * Transforme un réglage multiligne en tableau propre.
+	 * Turns a multi-line setting into a clean array.
 	 */
 	public static function lines( $key ) {
 		$raw = (string) self::get( $key );

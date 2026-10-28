@@ -1,6 +1,6 @@
 <?php
 /**
- * Fulgur Cache — drop-in généré automatiquement. Ne pas modifier.
+ * Fulgur Cache — automatically generated drop-in. Do not edit.
  * FULGUR_DROPIN
  */
 defined( 'ABSPATH' ) || exit;

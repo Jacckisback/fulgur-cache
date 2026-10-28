@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit;
 require_once FULGUR_DIR . 'includes/serve.php';
 
 /**
- * Point d'entrée : charge les modules et gère le cycle de vie.
+ * Entry point: loads the modules and handles the lifecycle.
  */
 class Plugin {
 
@@ -61,7 +61,7 @@ class Plugin {
 		add_filter( 'cron_schedules', array( __CLASS__, 'cron_schedules' ) );
 
 		if ( false === get_option( Settings::OPTION ) ) {
-			// Première installation : profil Équilibré par défaut.
+			// First install: Balanced profile by default.
 			Settings::apply_profile( 'balanced' );
 		}
 		Installer::install();
@@ -91,7 +91,7 @@ class Plugin {
 	}
 
 	/**
-	 * Réglages modifiés : on régénère la config du drop-in et les règles serveur.
+	 * Settings changed: regenerate the drop-in config and the server rules.
 	 */
 	public function settings_updated( $new, $old ) {
 		Installer::write_config();

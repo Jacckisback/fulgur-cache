@@ -4,7 +4,7 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Capture la page générée, l'optimise et l'enregistre sur disque (HTML + gzip + brotli).
+ * Captures the generated page, optimizes it and stores it on disk (HTML + gzip + brotli).
  */
 class Page_Cache {
 
@@ -15,7 +15,7 @@ class Page_Cache {
 	private $preview = false;
 
 	public function __construct() {
-		// Démarrage le plus tôt possible après le choix du template.
+		// Start as early as possible once the template is chosen.
 		add_action( 'template_redirect', array( $this, 'start' ), -9999 );
 	}
 
@@ -27,7 +27,7 @@ class Page_Cache {
 			return;
 		}
 
-		// Prévisualisation admin : ?fulgur_preview=1 applique les optimisations sans mettre en cache.
+		// Admin preview: ?fulgur_preview=1 applies optimizations without caching.
 		$this->preview = isset( $_GET['fulgur_preview'] ) && current_user_can( 'manage_options' );
 
 		$optimize = $this->preview || ( ! is_user_logged_in() && empty( $_GET['fulgur_off'] ) );
@@ -66,7 +66,7 @@ class Page_Cache {
 	}
 
 	/**
-	 * Callback du tampon de sortie.
+	 * Output buffer callback.
 	 */
 	public function finish( $html ) {
 		if ( strlen( $html ) < 255 || false === stripos( $html, '</html>' ) ) {
@@ -145,7 +145,7 @@ class Page_Cache {
 	/* ------------------------------------------------------------------ */
 
 	/**
-	 * Purge une URL (et ses pages paginées).
+	 * Purges a URL (and its paginated pages).
 	 */
 	public static function purge_url( $url ) {
 		$host = (string) wp_parse_url( $url, PHP_URL_HOST );
@@ -175,7 +175,7 @@ class Page_Cache {
 	}
 
 	/**
-	 * Supprime les pages plus anciennes que la durée de vie configurée.
+	 * Deletes pages older than the configured lifespan.
 	 */
 	public static function purge_expired() {
 		$lifespan = (int) Settings::get( 'cache_lifespan' ) * HOUR_IN_SECONDS;
@@ -211,7 +211,7 @@ class Page_Cache {
 	}
 
 	/**
-	 * Statistiques du cache (nombre de pages, poids).
+	 * Cache statistics (page count, size).
 	 */
 	public static function usage() {
 		$dir   = FULGUR_CACHE_DIR . '/' . Installer::site_host();

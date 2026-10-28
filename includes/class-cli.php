@@ -4,17 +4,17 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Commandes WP-CLI : wp fulgur <commande>
+ * WP-CLI commands: wp fulgur <command>
  */
 class Cli {
 
 	/**
-	 * Vide le cache (tout, ou une URL).
+	 * Clears the cache (everything, or one URL).
 	 *
 	 * ## OPTIONS
 	 *
 	 * [--url=<url>]
-	 * : URL précise à vider.
+	 * : Specific URL to clear.
 	 *
 	 * @when after_wp_load
 	 */
@@ -29,7 +29,7 @@ class Cli {
 	}
 
 	/**
-	 * Précharge toutes les pages du site immédiatement.
+	 * Preloads every page of the site right now.
 	 */
 	public function preload() {
 		Preload::schedule_full();
@@ -49,7 +49,7 @@ class Cli {
 	}
 
 	/**
-	 * Affiche l'état du cache et le diagnostic.
+	 * Shows the cache status and diagnostics.
 	 */
 	public function status() {
 		$usage = Page_Cache::usage();
@@ -66,7 +66,7 @@ class Cli {
 	}
 
 	/**
-	 * Applique un profil : safe, balanced ou turbo.
+	 * Applies a profile: safe, balanced or turbo.
 	 *
 	 * ## OPTIONS
 	 *
@@ -79,7 +79,7 @@ class Cli {
 	}
 
 	/**
-	 * Convertit toutes les images de la médiathèque en WebP/AVIF.
+	 * Converts every media library image to WebP/AVIF.
 	 */
 	public function images() {
 		$offset = 0;
@@ -97,7 +97,7 @@ class Cli {
 	}
 
 	/**
-	 * Nettoie la base de données.
+	 * Cleans the database.
 	 */
 	public function db() {
 		$removed = Database::clean( array_keys( Database::tasks() ) );

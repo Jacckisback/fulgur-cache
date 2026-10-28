@@ -4,7 +4,7 @@ namespace Fulgur;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Compteurs légers affichés dans le tableau de bord.
+ * Lightweight counters shown on the dashboard.
  */
 class Stats {
 
