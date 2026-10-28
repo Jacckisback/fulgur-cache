@@ -51,7 +51,7 @@ class Plugin {
 	public static function cron_schedules( $schedules ) {
 		$schedules['fulgur_5min'] = array(
 			'interval' => 5 * MINUTE_IN_SECONDS,
-			'display'  => 'Toutes les 5 minutes (Fulgur)',
+			'display'  => __( 'Every 5 minutes (Fulgur)', 'fulgur-cache' ),
 		);
 		return $schedules;
 	}

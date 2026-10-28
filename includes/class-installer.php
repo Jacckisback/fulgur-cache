@@ -78,7 +78,7 @@ class Installer {
 	public static function write_dropin() {
 		$file = self::dropin_path();
 		if ( is_file( $file ) && ! self::dropin_is_ours() ) {
-			return new \WP_Error( 'fulgur_dropin_conflict', 'Un autre plugin de cache utilise déjà advanced-cache.php.' );
+			return new \WP_Error( 'fulgur_dropin_conflict', __( 'Another caching plugin is already using advanced-cache.php.', 'fulgur-cache' ) );
 		}
 		$tpl = (string) file_get_contents( FULGUR_DIR . 'templates/advanced-cache.php' );
 		$tpl = str_replace(
@@ -86,7 +86,7 @@ class Installer {
 			array( addslashes( FULGUR_DIR . 'includes/serve.php' ), addslashes( FULGUR_CONFIG_DIR ) ),
 			$tpl
 		);
-		return self::atomic_write( $file, $tpl ) ? true : new \WP_Error( 'fulgur_dropin_write', 'Impossible d\'écrire wp-content/advanced-cache.php.' );
+		return self::atomic_write( $file, $tpl ) ? true : new \WP_Error( 'fulgur_dropin_write', __( 'Cannot write wp-content/advanced-cache.php.', 'fulgur-cache' ) );
 	}
 
 	public static function remove_dropin() {
@@ -271,7 +271,7 @@ class Installer {
 		$cache_rel = self::relative_to_root( FULGUR_CACHE_DIR );
 		$cookies   = implode( '|', \Fulgur_Serve::BYPASS_COOKIES );
 		return <<<NGINX
-# --- Fulgur Cache : service statique sans PHP ---
+# --- Fulgur Cache: static serving without PHP ---
 set \$fulgur_file "/{$cache_rel}/\$host\${uri}index.html";
 set \$fulgur_ok 1;
 if (\$request_method != GET) { set \$fulgur_ok 0; }
@@ -280,8 +280,8 @@ if (\$http_cookie ~* "({$cookies})") { set \$fulgur_ok 0; }
 if (\$uri !~ /\$) { set \$fulgur_ok 0; }
 if (\$fulgur_ok = 0) { set \$fulgur_file "/nonexistent"; }
 
-gzip_static on;        # sert index.html.gz si présent
-# brotli_static on;    # décommentez si le module ngx_brotli est installé
+gzip_static on;        # serves index.html.gz when present
+# brotli_static on;    # uncomment if the ngx_brotli module is installed
 
 location / {
     try_files \$fulgur_file \$uri \$uri/ /index.php?\$args;

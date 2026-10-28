@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Fulgur Cache
  * Plugin URI:        https://thierrygustin.com/fulgur-cache
- * Description:       Cache de page statique, CSS critique, optimiseur IA (Claude), optimisation HTML/JS, images AVIF/WebP, préchargement intelligent (Speculation Rules) et nettoyage de base de données. Un clic pour un site ultra-rapide.
- * Version:           1.1.0
+ * Description:       Static page cache, critical CSS, AI optimizer (Claude), HTML/JS optimization, AVIF/WebP images, smart preloading (Speculation Rules) and database cleanup. One click for a blazing-fast site.
+ * Version:           1.2.0
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            Thierry Gustin
@@ -15,7 +15,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'FULGUR_VERSION', '1.1.0' );
+define( 'FULGUR_VERSION', '1.2.0' );
 define( 'FULGUR_FILE', __FILE__ );
 define( 'FULGUR_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FULGUR_URL', plugin_dir_url( __FILE__ ) );
@@ -44,3 +44,9 @@ register_activation_hook( __FILE__, array( 'Fulgur\\Plugin', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Fulgur\\Plugin', 'deactivate' ) );
 
 add_action( 'plugins_loaded', array( 'Fulgur\\Plugin', 'instance' ) );
+add_action(
+	'init',
+	static function () {
+		load_plugin_textdomain( 'fulgur-cache', false, dirname( plugin_basename( FULGUR_FILE ) ) . '/languages' );
+	}
+);

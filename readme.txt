@@ -4,36 +4,49 @@ Tags: cache, performance, pagespeed, critical css, ai
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Cache statique, CSS critique, optimiseur IA (Claude), JS différé, images AVIF/WebP, navigation instantanée. Open source.
+Static cache, critical CSS, AI optimizer (Claude), delayed JS, AVIF/WebP images, instant navigation. Open source.
 
 == Description ==
 
-Fulgur Cache rend un site WordPress ultra-rapide sans configuration technique :
+Fulgur Cache makes a WordPress site extremely fast without technical setup:
 
-* **Cache de page statique** servi avant WordPress (drop-in), et même sans PHP sur Apache/LiteSpeed (.htaccess) ou Nginx.
-* **Pré-compression Brotli et gzip** des pages, en-têtes ETag/304.
-* **Purge intelligente** : seule la page modifiée, l'accueil, les catégories, étiquettes, auteur et articles voisins sont vidés, puis re-préchargés aussitôt.
-* **Préchargement** de tout le site en arrière-plan : aucun visiteur ne tombe sur une page froide.
-* **Navigation instantanée** : Speculation Rules (prerender au survol) + repli léger pour Safari/Firefox.
-* **JavaScript** : report (defer) avec ordre préservé, ou chargement à la première interaction.
-* **CSS critique / suppression du CSS inutilisé** calculés sur le serveur, sans service externe.
-* **Optimiseur IA (Claude)** : analyse serveur, charge et PageSpeed, applique les meilleurs réglages, vérifie et annule automatiquement en cas de régression.
-* **CSS** : minification, font-display: swap, Google Fonts hébergées localement (RGPD).
-* **Images** : conversion WebP/AVIF automatique, lazy-load natif, détection et préchargement de l'image LCP, dimensions manquantes (CLS), façades YouTube.
-* **103 Early Hints** : préchargement de l'image principale avant même le HTML.
-* **Allègement de WordPress** : emojis, embeds, heartbeat, XML-RPC, dashicons, cart-fragments WooCommerce.
-* **Base de données** : nettoyage manuel ou hebdomadaire.
-* **CDN et Cloudflare** : réécriture des URL et purge automatique.
-* **3 profils** (Sûr, Équilibré, Turbo), assistant de démarrage, test de vitesse intégré, score PageSpeed, mode « Tester sans risque », diagnostic avec réparation en un clic, WP-CLI.
+* **Static page cache** served before WordPress (drop-in), and even without PHP on Apache/LiteSpeed (.htaccess) or Nginx.
+* **Brotli and gzip pre-compression** of pages, ETag/304 headers.
+* **Smart purge**: only the edited page, the home page, categories, tags, author and adjacent posts are cleared, then preloaded again.
+* **Preloading** of the whole site in the background: no visitor ever hits a cold page.
+* **Critical CSS / unused CSS removal** computed on your server, with no external service.
+* **AI optimizer (Claude)**: analyzes server, load and PageSpeed, applies the best settings, verifies and rolls back automatically on regression.
+* **Instant navigation**: Speculation Rules (prerender on hover) + lightweight fallback for Safari/Firefox.
+* **JavaScript**: defer with preserved order, or delay until first interaction.
+* **CSS**: minification, font-display: swap, locally hosted Google Fonts (GDPR).
+* **Images**: automatic WebP/AVIF conversion, native lazy-loading, LCP image detection and preload, missing dimensions (CLS), YouTube facades.
+* **103 Early Hints**: the main image is preloaded before the HTML arrives.
+* **WordPress cleanup**: emojis, embeds, heartbeat, XML-RPC, dashicons, WooCommerce cart-fragments.
+* **Database** cleanup, manual or weekly.
+* **CDN and Cloudflare**: URL rewriting and automatic purge.
+* **3 profiles** (Safe, Balanced, Turbo), onboarding wizard, built-in speed test, PageSpeed score, “Test safely” preview mode, diagnostics with one-click repair, WP-CLI.
+
+Interface in English and French.
 
 == Installation ==
 
-1. Envoyer le dossier `fulgur-cache` dans `wp-content/plugins/` (ou téléverser le zip).
-2. Activer le plugin : l'assistant s'ouvre et applique le profil choisi.
-3. Désactiver tout autre plugin de cache.
+1. Upload the `fulgur-cache` folder to `wp-content/plugins/` (or upload the zip).
+2. Activate the plugin: the wizard opens and applies the chosen profile.
+3. Deactivate any other caching plugin.
+
+== Frequently Asked Questions ==
+
+= Is the AI optimizer required? =
+
+No. Everything works without it. The AI optimizer is optional and only runs if you add an Anthropic API key.
+
+= Where do I put the API key? =
+
+In the AI Optimizer tab, or more safely in wp-config.php: `define( 'FULGUR_ANTHROPIC_API_KEY', 'sk-ant-...' );`
 
 == WP-CLI ==
 
@@ -44,33 +57,37 @@ Fulgur Cache rend un site WordPress ultra-rapide sans configuration technique :
 * `wp fulgur images`
 * `wp fulgur db`
 
-== Filtres pour développeurs ==
+== Developer filters ==
 
-* `fulgur_is_cacheable` (bool) — empêcher la mise en cache d'une page.
-* `fulgur_optimize_page` (bool) — désactiver les optimisations sur une page.
-* `fulgur_html_before` / `fulgur_html_after` (string) — modifier le HTML.
-* `fulgur_purge_post_urls` (array, post_id) — URL purgées à la modification d'un contenu.
-* `fulgur_preload_urls` (array) — URL préchargées.
-* `fulgur_css_exclusions` (array) — CSS à ne pas minifier.
-* Balise `<meta name="fulgur-skip">` ou attribut `data-fulgur-skip` sur une balise pour l'exclure.
+* `fulgur_is_cacheable` (bool) — prevent a page from being cached.
+* `fulgur_optimize_page` (bool) — disable optimizations on a page.
+* `fulgur_html_before` / `fulgur_html_after` (string) — alter the HTML.
+* `fulgur_purge_post_urls` (array, post_id) — URLs purged when content changes.
+* `fulgur_preload_urls` (array) — URLs to preload.
+* `fulgur_css_exclusions` (array) — CSS files not to minify.
+* `<meta name="fulgur-skip">` tag or `data-fulgur-skip` attribute to exclude a page or an element.
 
-== Services externes ==
+== External services ==
 
-Fulgur Cache ne contacte aucun service externe par défaut. Selon les fonctions activées :
+Fulgur Cache contacts no external service by default. Depending on the features you enable:
 
-* **API Anthropic (Claude)** — uniquement si une clé API est renseignée dans l'onglet Optimiseur IA. Données envoyées : rapport technique (configuration serveur, charge, liste des plugins actifs, réglages, mesures PageSpeed). Aucun contenu ni donnée de visiteur. Conditions : https://www.anthropic.com/legal/commercial-terms — Confidentialité : https://www.anthropic.com/legal/privacy
-* **Google PageSpeed Insights** — lors d'une analyse IA ou du bouton « Score PageSpeed ». L'URL publique de la page d'accueil est envoyée. https://policies.google.com/privacy
-* **Google Fonts** — en mode « Héberger localement », les fichiers de police sont téléchargés une fois puis servis depuis le site.
-* **Cloudflare** — si un jeton API est renseigné, pour vider le cache Cloudflare. https://www.cloudflare.com/privacypolicy/
+* **Anthropic API (Claude)** — only if an API key is set in the AI Optimizer tab. Data sent: a technical report (server configuration, load, list of active plugins, settings, PageSpeed measurements). No content and no visitor data. Terms: https://www.anthropic.com/legal/commercial-terms — Privacy: https://www.anthropic.com/legal/privacy
+* **Google PageSpeed Insights** — during an AI analysis or when you click “Mobile PageSpeed score”. The public URL of the home page is sent. https://policies.google.com/privacy
+* **Google Fonts** — in “Host locally” mode, font files are downloaded once and then served from your site.
+* **Cloudflare** — if an API token is set, to purge the Cloudflare cache. https://www.cloudflare.com/privacypolicy/
 
 == Changelog ==
 
-= 1.1.0 =
-* CSS critique et suppression du CSS inutilisé (analyseur CSS en PHP).
-* Optimiseur IA (Claude) avec vérification PageSpeed et retour arrière automatique.
-* Pilote automatique hebdomadaire.
-* Mesure de la charge (pages servies depuis le cache, pages générées).
+= 1.2.0 =
+* English interface, French translation included (wp.i18n for the admin app).
+* AI answers follow the admin language.
+* Translation tooling (`bin/i18n.py`).
 
+= 1.1.0 =
+* Critical CSS and unused CSS removal (PHP CSS parser).
+* AI optimizer (Claude) with PageSpeed verification and automatic rollback.
+* Weekly autopilot.
+* Load metrics (pages served from cache, pages generated).
 
 = 1.0.0 =
-* Première version.
+* First release.

@@ -81,7 +81,7 @@ class Ai {
 		$code = wp_remote_retrieve_response_code( $res );
 		if ( 200 !== $code ) {
 			$data = json_decode( wp_remote_retrieve_body( $res ), true );
-			return new \WP_Error( 'fulgur_ai_key', 401 === $code ? 'Clé API refusée par Anthropic.' : ( $data['error']['message'] ?? 'Erreur ' . $code ) );
+			return new \WP_Error( 'fulgur_ai_key', 401 === $code ? __( 'Anthropic rejected the API key.', 'fulgur-cache' ) : ( $data['error']['message'] ?? sprintf( __( 'Error %d', 'fulgur-cache' ), $code ) ) );
 		}
 		return true;
 	}
@@ -98,6 +98,7 @@ class Ai {
 				'stage'    => 'idle',
 				'status'   => 'idle',
 				'mode'     => 'manual',
+				'locale'   => 'en_US',
 				'message'  => '',
 				'result'   => null,
 				'verify'   => null,
@@ -119,7 +120,7 @@ class Ai {
 	 */
 	public static function start( $mode = 'manual' ) {
 		if ( '' === self::secret( 'anthropic' ) ) {
-			return new \WP_Error( 'fulgur_ai_key', 'Ajoute d\'abord ta clé API Anthropic.' );
+			return new \WP_Error( 'fulgur_ai_key', __( 'Add your Anthropic API key first.', 'fulgur-cache' ) );
 		}
 		$job = self::save_job(
 			array(
@@ -127,7 +128,8 @@ class Ai {
 				'stage'   => 'collect',
 				'status'  => 'queued',
 				'mode'    => $mode,
-				'message' => 'Collecte des mesures (serveur, charge, PageSpeed)…',
+				'locale'  => is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ? get_user_locale() : get_locale(),
+				'message' => __( 'Collecting measurements (server, load, PageSpeed)…', 'fulgur-cache' ),
 				'started' => time(),
 			)
 		);
@@ -141,15 +143,15 @@ class Ai {
 	public static function apply( array $keys ) {
 		$job = self::job();
 		if ( empty( $job['result']['changes'] ) ) {
-			return new \WP_Error( 'fulgur_ai_nothing', 'Aucune recommandation à appliquer.' );
+			return new \WP_Error( 'fulgur_ai_nothing', __( 'No recommendation to apply.', 'fulgur-cache' ) );
 		}
 		$job['selected'] = array_values( array_intersect( $keys, wp_list_pluck( $job['result']['changes'], 'key' ) ) );
 		if ( ! $job['selected'] ) {
-			return new \WP_Error( 'fulgur_ai_nothing', 'Sélectionne au moins une recommandation.' );
+			return new \WP_Error( 'fulgur_ai_nothing', __( 'Select at least one recommendation.', 'fulgur-cache' ) );
 		}
 		$job['stage']   = 'apply';
 		$job['status']  = 'queued';
-		$job['message'] = 'Application des réglages…';
+		$job['message'] = __( 'Applying settings…', 'fulgur-cache' );
 		self::save_job( $job );
 		self::schedule();
 		return $job;
@@ -191,12 +193,12 @@ class Ai {
 				case 'collect':
 					$report = Ai_Report::build( (bool) Settings::get( 'ai_psi' ) );
 					update_option( self::REPORT, $report, false );
-					$job = self::next( $job, 'analyze', 'Claude analyse ton site…' );
+					$job = self::next( $job, 'analyze', __( 'Claude is analyzing your site…', 'fulgur-cache' ) );
 					break;
 
 				case 'analyze':
 					$report        = (array) get_option( self::REPORT, array() );
-					$job['result'] = self::analyze( $report );
+					$job['result'] = self::analyze( $report, $job['locale'] );
 					if ( is_wp_error( $job['result'] ) ) {
 						throw new \RuntimeException( $job['result']->get_error_message() );
 					}
@@ -214,9 +216,9 @@ class Ai {
 							}
 						);
 						$job['selected'] = wp_list_pluck( $safe, 'key' );
-						$job             = $job['selected'] ? self::next( $job, 'apply', 'Application automatique des réglages sans risque…' ) : self::finish( $job, 'ready', 'Aucun changement sans risque à appliquer.' );
+						$job             = $job['selected'] ? self::next( $job, 'apply', __( 'Automatically applying safe settings…', 'fulgur-cache' ) ) : self::finish( $job, 'ready', __( 'No safe change to apply.', 'fulgur-cache' ) );
 					} else {
-						$job = self::finish( $job, 'ready', 'Recommandations prêtes.' );
+						$job = self::finish( $job, 'ready', __( 'Recommendations ready.', 'fulgur-cache' ) );
 						if ( 'suggest' === $job['mode'] ) {
 							self::notify( $job );
 						}
@@ -234,7 +236,7 @@ class Ai {
 					$values['profile'] = 'ai';
 					Settings::update( $values );
 					// La purge et le préchargement s'exécutent à la fin de cette requête (Purge::flush).
-					$job = self::next( $job, 'verify', 'Vérification : nouveau test PageSpeed sur le site optimisé…', 45 );
+					$job = self::next( $job, 'verify', __( 'Checking: new PageSpeed test on the optimized site…', 'fulgur-cache' ), 45 );
 					break;
 
 				case 'verify':
@@ -282,13 +284,13 @@ class Ai {
 
 		$reasons = array();
 		if ( ! $ok ) {
-			$reasons[] = 'la page d\'accueil ne s\'affiche plus correctement';
+			$reasons[] = __( 'the home page no longer displays correctly', 'fulgur-cache' );
 		}
 		if ( null !== $score && null !== $base['mobile'] && $score < $base['mobile'] - 3 ) {
-			$reasons[] = sprintf( 'le score mobile a baissé (%d → %d)', $base['mobile'], $score );
+			$reasons[] = sprintf( __( 'the mobile score dropped (%1$d → %2$d)', 'fulgur-cache' ), $base['mobile'], $score );
 		}
 		if ( null !== $errors && null !== $base['errors'] && $errors > $base['errors'] ) {
-			$reasons[] = sprintf( 'nouvelles erreurs JavaScript détectées (%d → %d)', $base['errors'], $errors );
+			$reasons[] = sprintf( __( 'new JavaScript errors detected (%1$d → %2$d)', 'fulgur-cache' ), $base['errors'], $errors );
 		}
 
 		$rolled_back = false;
@@ -312,11 +314,11 @@ class Ai {
 		update_option( self::HISTORY, array_slice( $history, 0, 10 ), false );
 
 		if ( $rolled_back ) {
-			$message = 'Réglages annulés automatiquement : ' . implode( ' ; ', $reasons ) . '.';
+			$message = sprintf( __( 'Settings rolled back automatically: %s.', 'fulgur-cache' ), implode( '; ', $reasons ) );
 		} elseif ( null !== $score && null !== $base['mobile'] ) {
-			$message = sprintf( 'Réglages appliqués. Score PageSpeed mobile : %d → %d.', $base['mobile'], $score );
+			$message = sprintf( __( 'Settings applied. Mobile PageSpeed score: %1$d → %2$d.', 'fulgur-cache' ), $base['mobile'], $score );
 		} else {
-			$message = 'Réglages appliqués et site vérifié.';
+			$message = __( 'Settings applied and site checked.', 'fulgur-cache' );
 		}
 		return array(
 			'score_before' => $base['mobile'],
@@ -350,7 +352,7 @@ class Ai {
 	/**
 	 * @return array|\WP_Error Recommandations validées.
 	 */
-	public static function analyze( array $report ) {
+	public static function analyze( array $report, $locale = 'en_US' ) {
 		$model   = Settings::get( 'ai_model' );
 		$headers = array(
 			'content-type'      => 'application/json',
@@ -364,7 +366,7 @@ class Ai {
 			'messages'      => array(
 				array(
 					'role'    => 'user',
-					'content' => "Voici le rapport technique du site. Propose les meilleurs réglages Fulgur Cache pour ce serveur et cette charge.\n\n" . wp_json_encode( $report, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ),
+					'content' => 'Language for your answer: WordPress locale ' . $locale . ".\n\nHere is the site's technical report. Propose the best Fulgur Cache settings for this server and this load.\n\n" . wp_json_encode( $report, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ),
 				),
 			),
 			'output_config' => array(
@@ -390,28 +392,28 @@ class Ai {
 			)
 		);
 		if ( is_wp_error( $res ) ) {
-			return new \WP_Error( 'fulgur_ai_http', 'Connexion à l\'API Claude impossible : ' . $res->get_error_message() );
+			return new \WP_Error( 'fulgur_ai_http', sprintf( __( 'Could not connect to the Claude API: %s', 'fulgur-cache' ), $res->get_error_message() ) );
 		}
 		$code = wp_remote_retrieve_response_code( $res );
 		$data = json_decode( wp_remote_retrieve_body( $res ), true );
 		if ( 200 !== $code ) {
-			$msg = $data['error']['message'] ?? 'Erreur HTTP ' . $code;
+			$msg = $data['error']['message'] ?? sprintf( __( 'HTTP error %d', 'fulgur-cache' ), $code );
 			if ( 401 === $code ) {
-				$msg = 'Clé API invalide.';
+				$msg = __( 'Invalid API key.', 'fulgur-cache' );
 			} elseif ( 429 === $code ) {
-				$msg = 'Limite de requêtes Anthropic atteinte, réessaie dans quelques minutes.';
+				$msg = __( 'Anthropic rate limit reached, try again in a few minutes.', 'fulgur-cache' );
 			} elseif ( 529 === $code || $code >= 500 ) {
-				$msg = 'L\'API Claude est momentanément surchargée, réessaie plus tard.';
+				$msg = __( 'The Claude API is temporarily overloaded, try again later.', 'fulgur-cache' );
 			}
 			return new \WP_Error( 'fulgur_ai_api', $msg );
 		}
 
 		$stop = $data['stop_reason'] ?? '';
 		if ( 'refusal' === $stop ) {
-			return new \WP_Error( 'fulgur_ai_refusal', 'Claude a refusé cette analyse.' );
+			return new \WP_Error( 'fulgur_ai_refusal', __( 'Claude declined this analysis.', 'fulgur-cache' ) );
 		}
 		if ( 'max_tokens' === $stop ) {
-			return new \WP_Error( 'fulgur_ai_truncated', 'Réponse de Claude incomplète, réessaie.' );
+			return new \WP_Error( 'fulgur_ai_truncated', __( 'Claude\'s answer was incomplete, try again.', 'fulgur-cache' ) );
 		}
 
 		$text = '';
@@ -422,7 +424,7 @@ class Ai {
 		}
 		$json = json_decode( $text, true );
 		if ( ! is_array( $json ) ) {
-			return new \WP_Error( 'fulgur_ai_json', 'Réponse de Claude illisible.' );
+			return new \WP_Error( 'fulgur_ai_json', __( 'Claude\'s answer could not be read.', 'fulgur-cache' ) );
 		}
 
 		$json['changes'] = self::validate_changes( (array) ( $json['changes'] ?? array() ) );
@@ -525,70 +527,72 @@ class Ai {
 		$choices = Settings::choices();
 		$lines   = array();
 		foreach ( self::setting_docs() as $key => $doc ) {
-			$type    = is_bool( Settings::defaults()[ $key ] ) ? 'booléen ("true"/"false")' : ( is_int( Settings::defaults()[ $key ] ) ? 'entier' : ( isset( $choices[ $key ] ) ? 'un parmi : ' . implode( ', ', $choices[ $key ] ) : 'texte, une valeur par ligne (\n)' ) );
-			$lines[] = '- ' . $key . ' [' . $type . '] : ' . $doc;
+			$default = Settings::defaults()[ $key ];
+			$type    = is_bool( $default ) ? 'boolean ("true"/"false")' : ( is_int( $default ) ? 'integer' : ( isset( $choices[ $key ] ) ? 'one of: ' . implode( ', ', $choices[ $key ] ) : 'text, one value per line (\n)' ) );
+			$lines[] = '- ' . $key . ' [' . $type . ']: ' . $doc;
 		}
-		return "Tu es un ingénieur expert en performance WordPress (Core Web Vitals, serveurs Apache/Nginx/LiteSpeed, hébergement mutualisé et VPS). Tu configures le plugin de cache Fulgur Cache d'un site à partir d'un rapport technique.\n\n"
-			. "Objectif : le meilleur score PageSpeed mobile et le meilleur temps de réponse possible SANS casser le site. Un site cassé est pire qu'un site lent.\n\n"
-			. "Règles :\n"
-			. "1. Ne propose que des changements justifiés par une donnée précise du rapport (cite-la dans « reason »).\n"
-			. "2. Adapte-toi au serveur : peu de RAM ou de CPU, charge élevée, hébergement mutualisé → privilégie le cache, la compression et l'allègement ; évite ce qui consomme du CPU à la génération.\n"
-			. "3. Adapte-toi à la charge : beaucoup de trafic → durée de vie du cache longue et préchargement ; faible trafic → préchargement indispensable car les visiteurs tombent sinon sur des pages froides.\n"
-			. "4. Les constructeurs de pages (Elementor, Divi…), sliders et bandeaux cookies sont sensibles au chargement différé du JavaScript et à la suppression du CSS : ajoute les exclusions nécessaires (delay_exclusions, defer_exclusions, css_safelist) en t'appuyant sur les URL de scripts du rapport.\n"
-			. "5. WooCommerce : ne retire pas cart-fragments si le site affiche un mini-panier dans l'en-tête sur toutes les pages.\n"
-			. "6. Si l'historique montre qu'un réglage a été annulé automatiquement, ne le repropose pas tel quel.\n"
-			. "7. risk : « safe » = ne peut pas casser l'affichage ; « moderate » = à vérifier ; « advanced » = peut casser des fonctionnalités JavaScript.\n"
-			. "8. Pour les champs texte, « value » est la liste complète finale (existant conservé + ajouts), une entrée par ligne.\n"
-			. "9. server_recommendations : actions côté hébergement que le plugin ne peut pas faire (version PHP, OPcache, Redis, HTTP/3, CDN, plugins lourds à remplacer…), concrètes et priorisées.\n"
-			. "10. Réponds en français, de façon concise et concrète. N'inclus pas un réglage déjà à la bonne valeur.\n\n"
-			. "Réglages disponibles :\n" . implode( "\n", $lines );
+		return "You are an expert WordPress performance engineer (Core Web Vitals, Apache/Nginx/LiteSpeed servers, shared hosting and VPS). You configure the Fulgur Cache plugin for a site, based on a technical report.\n\n"
+			. "Goal: the best possible mobile PageSpeed score and server response time WITHOUT breaking the site. A broken site is worse than a slow one.\n\n"
+			. "Rules:\n"
+			. "1. Only propose changes justified by a specific data point from the report (quote it in \"reason\").\n"
+			. "2. Adapt to the server: little RAM or CPU, high load, shared hosting -> favor caching, compression and trimming WordPress; avoid anything CPU-heavy at page generation.\n"
+			. "3. Adapt to the traffic: high traffic -> long cache lifespan and preloading; low traffic -> preloading is essential, otherwise visitors hit cold pages.\n"
+			. "4. Page builders (Elementor, Divi...), sliders and cookie banners are sensitive to delayed JavaScript and CSS removal: add the needed exclusions (delay_exclusions, defer_exclusions, css_safelist) based on the script URLs in the report.\n"
+			. "5. WooCommerce: do not remove cart-fragments if the site shows a mini-cart in the header on every page.\n"
+			. "6. If the history shows a setting was rolled back automatically, do not propose it again unchanged.\n"
+			. "7. risk: \"safe\" = cannot break the layout; \"moderate\" = needs checking; \"advanced\" = may break JavaScript features.\n"
+			. "8. For text settings, \"value\" is the complete final list (existing entries kept + additions), one entry per line.\n"
+			. "9. server_recommendations: hosting-side actions the plugin cannot do (PHP version, OPcache, Redis, HTTP/3, CDN, heavy plugins to replace...), concrete and prioritized.\n"
+			. "10. Be concise and concrete. Do not include a setting that already has the right value.\n"
+			. "11. Write every human-readable field (summary, diagnosis, reason, expected_impact, server_recommendations, expected_gain) in the language given in the request.\n\n"
+			. "Available settings:\n" . implode( "\n", $lines );
 	}
 
 	private static function setting_docs() {
 		return array(
-			'cache_lifespan'        => 'heures avant régénération d\'une page en cache (0 = illimité, la purge intelligente suffit).',
-			'cache_mobile'          => 'cache séparé mobile ; uniquement si le thème sert un HTML différent sur mobile.',
-			'cache_404'             => 'met en cache les pages 404 (protège contre les robots).',
-			'browser_cache'         => 'compression serveur + cache navigateur 1 an des fichiers statiques (.htaccess).',
-			'exclude_urls'          => 'URL jamais mises en cache.',
-			'ignored_query_params'  => 'paramètres d\'URL ignorés pour le cache (tracking).',
-			'exclude_cookies'       => 'cookies qui désactivent le cache.',
-			'exclude_user_agents'   => 'user-agents exclus du cache.',
-			'minify_html'           => 'minification HTML.',
-			'minify_css'            => 'minification des fichiers CSS locaux.',
-			'font_display_swap'     => 'ajoute font-display:swap aux @font-face.',
-			'google_fonts'          => 'off ; swap (display=swap + préconnexion) ; local (polices hébergées sur le site, RGPD, une connexion en moins).',
-			'css_mode'              => 'off ; critical (CSS utilisé par la page inline + feuilles complètes en asynchrone, sûr) ; remove (feuilles complètes chargées seulement à la première interaction, gain maximal, risque sur les éléments ajoutés par JS).',
-			'css_safelist'          => 'motifs de classes CSS toujours conservés par css_mode (classes ajoutées dynamiquement par JS).',
-			'defer_js'              => 'scripts en defer, ordre préservé, scripts inline transformés en data-URI.',
-			'defer_exclusions'      => 'motifs (URL ou code) de scripts à ne pas reporter.',
-			'delay_js'              => 'JavaScript exécuté seulement à la première interaction (énorme gain TBT, risque sur sliders/menus visibles au chargement).',
-			'delay_timeout'         => 'secondes avant chargement forcé des scripts différés (0 = interaction uniquement).',
-			'delay_exclusions'      => 'motifs (URL ou code) de scripts chargés immédiatement malgré delay_js.',
-			'lazy_images'           => 'lazy-load natif des images hors écran.',
-			'eager_images'          => 'nombre d\'images en haut de page jamais différées (l\'image LCP est détectée et préchargée).',
-			'image_dimensions'      => 'ajoute width/height manquants (CLS).',
-			'lazy_iframes'          => 'lazy-load des iframes.',
-			'youtube_facade'        => 'vignette à la place du lecteur YouTube jusqu\'au clic.',
-			'next_gen_images'       => 'conversion et service WebP/AVIF.',
-			'image_format'          => 'webp (remplacement direct) ou avif (<picture> AVIF+WebP, nécessite un encodeur AVIF).',
-			'image_quality'         => 'qualité de conversion 50-95.',
-			'preload_cache'         => 'préchargement de tout le site après purge.',
-			'speculation'           => 'Speculation Rules : off, prefetch, prerender (prerender = navigation instantanée mais charge serveur accrue).',
-			'speculation_eagerness' => 'conservative (au clic), moderate (au survol), eager.',
-			'instant_fallback'      => 'prefetch au survol pour Safari/Firefox.',
-			'preconnect_domains'    => 'domaines tiers critiques à préconnecter.',
-			'early_hints'           => 'en-têtes Link de préchargement (103 Early Hints).',
-			'disable_emojis'        => 'retire le script emoji.',
-			'disable_embeds'        => 'retire wp-embed.',
-			'remove_jquery_migrate' => 'retire jQuery Migrate (risque avec vieux plugins).',
-			'heartbeat'             => 'API Heartbeat : default, reduce (60 s), disable_front, disable.',
-			'disable_xmlrpc'        => 'désactive XML-RPC (attention Jetpack / app mobile).',
-			'clean_head'            => 'nettoie l\'en-tête HTML.',
-			'dashicons_visitors'    => 'retire les Dashicons pour les visiteurs.',
-			'wc_cart_fragments'     => 'retire cart-fragments WooCommerce hors pages boutique.',
-			'db_auto_clean'         => 'nettoyage hebdomadaire de la base.',
-			'db_revisions_keep'     => 'révisions conservées par article.',
+			'cache_lifespan'        => 'hours before a cached page is regenerated (0 = unlimited, smart purge is enough).',
+			'cache_mobile'          => 'separate mobile cache; only if the theme serves different HTML on mobile.',
+			'cache_404'             => 'caches 404 pages (protects against bots).',
+			'browser_cache'         => 'server compression + 1-year browser caching of static files (.htaccess).',
+			'exclude_urls'          => 'URLs never cached.',
+			'ignored_query_params'  => 'URL parameters ignored by the cache (tracking).',
+			'exclude_cookies'       => 'cookies that disable the cache.',
+			'exclude_user_agents'   => 'user agents excluded from the cache.',
+			'minify_html'           => 'HTML minification.',
+			'minify_css'            => 'minification of local CSS files.',
+			'font_display_swap'     => 'adds font-display:swap to @font-face rules.',
+			'google_fonts'          => 'off; swap (display=swap + preconnect); local (fonts hosted on the site, GDPR, one less connection).',
+			'css_mode'              => 'off; critical (CSS used by the page inlined + full stylesheets loaded async, safe); remove (full stylesheets loaded only on first interaction, maximum gain, risk for elements added by JS).',
+			'css_safelist'          => 'CSS class patterns always kept by css_mode (classes added dynamically by JS).',
+			'defer_js'              => 'scripts deferred, order preserved, inline scripts turned into data URIs.',
+			'defer_exclusions'      => 'patterns (URL or code) of scripts not to defer.',
+			'delay_js'              => 'JavaScript runs only on first user interaction (huge TBT gain, risk for sliders/menus visible on load).',
+			'delay_timeout'         => 'seconds before delayed scripts are forced to load (0 = interaction only).',
+			'delay_exclusions'      => 'patterns (URL or code) of scripts loaded immediately despite delay_js.',
+			'lazy_images'           => 'native lazy-loading of offscreen images.',
+			'eager_images'          => 'number of above-the-fold images never lazy-loaded (the LCP image is detected and preloaded).',
+			'image_dimensions'      => 'adds missing width/height (CLS).',
+			'lazy_iframes'          => 'lazy-loading of iframes.',
+			'youtube_facade'        => 'thumbnail instead of the YouTube player until click.',
+			'next_gen_images'       => 'WebP/AVIF conversion and serving.',
+			'image_format'          => 'webp (direct replacement) or avif (<picture> AVIF+WebP, needs an AVIF encoder).',
+			'image_quality'         => 'conversion quality 50-95.',
+			'preload_cache'         => 'preloads the whole site after a purge.',
+			'speculation'           => 'Speculation Rules: off, prefetch, prerender (prerender = instant navigation but more server load).',
+			'speculation_eagerness' => 'conservative (on click), moderate (on hover), eager.',
+			'instant_fallback'      => 'hover prefetch for Safari/Firefox.',
+			'preconnect_domains'    => 'critical third-party domains to preconnect.',
+			'early_hints'           => 'preload Link headers (103 Early Hints).',
+			'disable_emojis'        => 'removes the emoji script.',
+			'disable_embeds'        => 'removes wp-embed.',
+			'remove_jquery_migrate' => 'removes jQuery Migrate (risk with old plugins).',
+			'heartbeat'             => 'Heartbeat API: default, reduce (60 s), disable_front, disable.',
+			'disable_xmlrpc'        => 'disables XML-RPC (careful with Jetpack / mobile app).',
+			'clean_head'            => 'cleans the HTML head.',
+			'dashicons_visitors'    => 'removes Dashicons for visitors.',
+			'wc_cart_fragments'     => 'removes WooCommerce cart-fragments outside shop pages.',
+			'db_auto_clean'         => 'weekly database cleanup.',
+			'db_revisions_keep'     => 'revisions kept per post.',
 		);
 	}
 
@@ -620,12 +624,12 @@ class Ai {
 	}
 
 	private static function notify( array $job ) {
-		$subject = '[' . wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ) . '] Fulgur Cache : analyse IA hebdomadaire';
+		$subject = '[' . wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ) . '] ' . __( 'Fulgur Cache: weekly AI analysis', 'fulgur-cache' );
 		$lines   = array( $job['result']['summary'] ?? '', '' );
 		if ( 'auto' === $job['mode'] && ! empty( $job['verify'] ) ) {
 			$lines[] = $job['verify']['message'];
 		} else {
-			$lines[] = count( $job['result']['changes'] ?? array() ) . ' recommandation(s) en attente de validation.';
+			$lines[] = sprintf( _n( '%d recommendation awaiting approval.', '%d recommendations awaiting approval.', count( $job['result']['changes'] ?? array() ), 'fulgur-cache' ), count( $job['result']['changes'] ?? array() ) );
 		}
 		$lines[] = '';
 		$lines[] = admin_url( 'admin.php?page=fulgur-cache#ai' );

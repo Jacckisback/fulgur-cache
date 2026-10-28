@@ -62,7 +62,7 @@ class Metrics {
 			'avg_generation_ms'      => $total_miss ? (int) round( $total_ms / $total_miss ) : null,
 			'peak_requests_per_hour' => $peak_hour,
 			'peak_memory_mb'         => $peak_mem,
-			'note'                   => 'Les pages servies directement par .htaccess/Nginx (sans PHP) ne sont pas comptées.',
+			'note'                   => __( 'Pages served directly by .htaccess/Nginx (without PHP) are not counted.', 'fulgur-cache' ),
 		);
 	}
 

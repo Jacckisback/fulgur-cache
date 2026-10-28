@@ -21,11 +21,11 @@ class Cli {
 	public function clear( $args, $assoc ) {
 		if ( ! empty( $assoc['url'] ) ) {
 			Page_Cache::purge_url( $assoc['url'] );
-			\WP_CLI::success( 'Cache vidé pour ' . $assoc['url'] );
+			\WP_CLI::success( 'Cache cleared for ' . $assoc['url'] );
 			return;
 		}
 		Page_Cache::purge_all();
-		\WP_CLI::success( 'Tout le cache a été vidé.' );
+		\WP_CLI::success( 'All cache cleared.' );
 	}
 
 	/**
@@ -34,7 +34,7 @@ class Cli {
 	public function preload() {
 		Preload::schedule_full();
 		$total = count( (array) get_option( Preload::QUEUE, array() ) );
-		$bar   = \WP_CLI\Utils\make_progress_bar( 'Préchargement', $total );
+		$bar   = \WP_CLI\Utils\make_progress_bar( 'Preloading', $total );
 		while ( get_option( Preload::QUEUE ) ) {
 			$before = count( (array) get_option( Preload::QUEUE, array() ) );
 			Preload::run();
@@ -45,7 +45,7 @@ class Cli {
 		}
 		$bar->finish();
 		wp_clear_scheduled_hook( Preload::HOOK );
-		\WP_CLI::success( 'Préchargement terminé.' );
+		\WP_CLI::success( 'Preload complete.' );
 	}
 
 	/**
@@ -53,16 +53,16 @@ class Cli {
 	 */
 	public function status() {
 		$usage = Page_Cache::usage();
-		\WP_CLI::log( sprintf( 'Pages en cache : %d (%s)', $usage['pages'], size_format( $usage['size'] ) ) );
-		\WP_CLI::log( 'Profil : ' . Settings::get( 'profile' ) );
+		\WP_CLI::log( sprintf( 'Cached pages: %d (%s)', $usage['pages'], size_format( $usage['size'] ) ) );
+		\WP_CLI::log( 'Profile: ' . Settings::get( 'profile' ) );
 		$rows = array();
 		foreach ( Diagnostics::run() as $check ) {
 			$rows[] = array(
-				'statut'      => $check['status'],
-				'vérification' => $check['title'],
+				'status' => $check['status'],
+				'check'  => $check['title'],
 			);
 		}
-		\WP_CLI\Utils\format_items( 'table', $rows, array( 'statut', 'vérification' ) );
+		\WP_CLI\Utils\format_items( 'table', $rows, array( 'status', 'check' ) );
 	}
 
 	/**
@@ -75,7 +75,7 @@ class Cli {
 	 */
 	public function profile( $args ) {
 		Settings::apply_profile( $args[0] );
-		\WP_CLI::success( 'Profil appliqué : ' . $args[0] );
+		\WP_CLI::success( 'Profile applied: ' . $args[0] );
 	}
 
 	/**
@@ -84,7 +84,7 @@ class Cli {
 	public function images() {
 		$offset = 0;
 		$total  = Images::total_images();
-		$bar    = \WP_CLI\Utils\make_progress_bar( 'Conversion des images', $total );
+		$bar    = \WP_CLI\Utils\make_progress_bar( 'Converting images', $total );
 		do {
 			$res = Images::bulk( $offset, 10 );
 			for ( $i = $offset; $i < $res['offset']; $i++ ) {
@@ -93,7 +93,7 @@ class Cli {
 			$offset = $res['offset'];
 		} while ( ! $res['done'] );
 		$bar->finish();
-		\WP_CLI::success( 'Images converties.' );
+		\WP_CLI::success( 'Images converted.' );
 	}
 
 	/**
@@ -101,6 +101,6 @@ class Cli {
 	 */
 	public function db() {
 		$removed = Database::clean( array_keys( Database::tasks() ) );
-		\WP_CLI::success( $removed . ' éléments supprimés.' );
+		\WP_CLI::success( $removed . ' items removed.' );
 	}
 }

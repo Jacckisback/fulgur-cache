@@ -16,14 +16,14 @@ class Database {
 
 	public static function tasks() {
 		return array(
-			'revisions'      => 'Anciennes révisions d\'articles',
-			'auto_drafts'    => 'Brouillons automatiques',
-			'trashed_posts'  => 'Articles dans la corbeille',
-			'spam_comments'  => 'Commentaires indésirables',
-			'trash_comments' => 'Commentaires dans la corbeille',
-			'transients'     => 'Transients expirés',
-			'orphan_meta'    => 'Métadonnées orphelines',
-			'optimize'       => 'Optimisation des tables',
+			'revisions'      => __( 'Old post revisions', 'fulgur-cache' ),
+			'auto_drafts'    => __( 'Auto-drafts', 'fulgur-cache' ),
+			'trashed_posts'  => __( 'Trashed posts', 'fulgur-cache' ),
+			'spam_comments'  => __( 'Spam comments', 'fulgur-cache' ),
+			'trash_comments' => __( 'Trashed comments', 'fulgur-cache' ),
+			'transients'     => __( 'Expired transients', 'fulgur-cache' ),
+			'orphan_meta'    => __( 'Orphaned metadata', 'fulgur-cache' ),
+			'optimize'       => __( 'Table optimization', 'fulgur-cache' ),
 		);
 	}
 

@@ -58,7 +58,7 @@ class Cdn {
 		$token = Settings::get( 'cloudflare_token' );
 		$zone  = Settings::get( 'cloudflare_zone' );
 		if ( ! $token || ! $zone ) {
-			return new \WP_Error( 'fulgur_cf', 'Renseigne le jeton API et l\'ID de zone Cloudflare.' );
+			return new \WP_Error( 'fulgur_cf', __( 'Enter your Cloudflare API token and zone ID.', 'fulgur-cache' ) );
 		}
 		$res = wp_remote_get(
 			'https://api.cloudflare.com/client/v4/zones/' . rawurlencode( $zone ),
@@ -72,7 +72,7 @@ class Cdn {
 		}
 		$data = json_decode( wp_remote_retrieve_body( $res ), true );
 		if ( empty( $data['success'] ) ) {
-			return new \WP_Error( 'fulgur_cf', 'Cloudflare refuse la connexion : vérifie le jeton (permission « Zone > Cache Purge ») et l\'ID de zone.' );
+			return new \WP_Error( 'fulgur_cf', __( 'Cloudflare refused the connection: check the token (“Zone > Cache Purge” permission) and the zone ID.', 'fulgur-cache' ) );
 		}
 		return $data['result']['name'];
 	}

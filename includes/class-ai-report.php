@@ -97,7 +97,7 @@ class Ai_Report {
 			'version'        => get_bloginfo( 'version' ),
 			'multisite'      => is_multisite(),
 			'locale'         => get_locale(),
-			'theme'          => $theme->get( 'Name' ) . ' ' . $theme->get( 'Version' ) . ( $theme->parent() ? ' (enfant de ' . $theme->parent()->get( 'Name' ) . ')' : '' ),
+			'theme'          => $theme->get( 'Name' ) . ' ' . $theme->get( 'Version' ) . ( $theme->parent() ? ' (child of ' . $theme->parent()->get( 'Name' ) . ')' : '' ),
 			'block_theme'    => function_exists( 'wp_is_block_theme' ) && wp_is_block_theme(),
 			'active_plugins' => $plugins,
 			'published'      => $counts,
@@ -204,7 +204,7 @@ class Ai_Report {
 		}
 		$data = json_decode( wp_remote_retrieve_body( $res ), true );
 		if ( empty( $data['lighthouseResult'] ) ) {
-			return array( 'error' => $data['error']['message'] ?? 'PageSpeed indisponible (quota ?)' );
+			return array( 'error' => $data['error']['message'] ?? __( 'PageSpeed unavailable (quota?)', 'fulgur-cache' ) );
 		}
 		$lr     = $data['lighthouseResult'];
 		$audits = $lr['audits'];

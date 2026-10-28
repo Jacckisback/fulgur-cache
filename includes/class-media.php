@@ -119,7 +119,7 @@ class Media {
 		$w     = (int) self::attr( $tag, 'width' );
 		$h     = (int) self::attr( $tag, 'height' );
 		$ratio = ( $w && $h ) ? 'aspect-ratio:' . $w . '/' . $h . ';' : '';
-		$label = $title ? $title : 'Lire la vidéo';
+		$label = $title ? $title : __( 'Play video', 'fulgur-cache' );
 		return '<button type="button" class="fulgur-yt" style="' . $ratio . '" data-src="' . esc_url( $src ) . '" aria-label="' . esc_attr( $label ) . '">'
 			. '<img src="https://i.ytimg.com/vi/' . $id . '/hqdefault.jpg" alt="' . esc_attr( $label ) . '" loading="lazy" decoding="async" width="480" height="360">'
 			. '</button>';

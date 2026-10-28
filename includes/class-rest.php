@@ -195,7 +195,7 @@ class Rest {
 	public function import( \WP_REST_Request $req ) {
 		$data = $req->get_param( 'data' );
 		if ( ! is_array( $data ) || empty( $data['settings'] ) || 'fulgur-cache' !== ( $data['plugin'] ?? '' ) ) {
-			return new \WP_Error( 'fulgur_import', 'Fichier de réglages invalide.', array( 'status' => 400 ) );
+			return new \WP_Error( 'fulgur_import', __( 'Invalid settings file.', 'fulgur-cache' ), array( 'status' => 400 ) );
 		}
 		Settings::update( (array) $data['settings'] );
 		return rest_ensure_response( self::state() );

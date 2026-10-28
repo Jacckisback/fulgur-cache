@@ -99,9 +99,9 @@ class Settings {
 	public static function profiles() {
 		return array(
 			'safe'     => array(
-				'label'       => 'Sûr',
-				'description' => 'Cache + compression + médias. Zéro risque de casse, compatible avec 100 % des thèmes.',
-				'gain'        => '+40 à 60 % de vitesse',
+				'label'       => __( 'Safe', 'fulgur-cache' ),
+				'description' => __( 'Cache + compression + media. Zero risk of breakage, works with 100% of themes.', 'fulgur-cache' ),
+				'gain'        => __( '+40 to 60% faster', 'fulgur-cache' ),
 				'values'      => array(
 					'page_cache'      => true,
 					'minify_html'     => true,
@@ -119,9 +119,9 @@ class Settings {
 				),
 			),
 			'balanced' => array(
-				'label'       => 'Équilibré',
-				'description' => 'Recommandé. Ajoute CSS critique, minification, report du JavaScript, façades YouTube et pré-rendu instantané.',
-				'gain'        => '+60 à 80 % de vitesse',
+				'label'       => __( 'Balanced', 'fulgur-cache' ),
+				'description' => __( 'Recommended. Adds critical CSS, minification, deferred JavaScript, YouTube facades and instant prerendering.', 'fulgur-cache' ),
+				'gain'        => __( '+60 to 80% faster', 'fulgur-cache' ),
 				'values'      => array(
 					'page_cache'      => true,
 					'minify_html'     => true,
@@ -139,9 +139,9 @@ class Settings {
 				),
 			),
 			'turbo'    => array(
-				'label'       => 'Turbo',
-				'description' => 'Performance maximale : CSS inutilisé supprimé, JavaScript chargé à la première interaction, polices Google hébergées localement (RGPD).',
-				'gain'        => 'Score PageSpeed 90+ visé',
+				'label'       => __( 'Turbo', 'fulgur-cache' ),
+				'description' => __( 'Maximum performance: unused CSS removed, JavaScript loaded on first interaction, Google Fonts hosted locally (GDPR).', 'fulgur-cache' ),
+				'gain'        => __( 'Targets a 90+ PageSpeed score', 'fulgur-cache' ),
 				'values'      => array(
 					'page_cache'      => true,
 					'minify_html'     => true,

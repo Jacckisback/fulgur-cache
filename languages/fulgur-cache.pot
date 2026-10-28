@@ -1,0 +1,1746 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Fulgur Cache\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-28 22:12+0000\n"
+"X-Domain: fulgur-cache\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: fulgur-cache.php
+msgid "Fulgur Cache"
+msgstr ""
+
+#: fulgur-cache.php
+msgid "Static page cache, critical CSS, AI optimizer (Claude), HTML/JS optimization, AVIF/WebP images, smart preloading (Speculation Rules) and database cleanup. One click for a blazing-fast site."
+msgstr ""
+
+#: includes/class-admin.php:44
+msgid "Loading…"
+msgstr ""
+
+#: includes/class-admin.php:45
+msgid "Fulgur Cache needs JavaScript for its interface."
+msgstr ""
+
+#: includes/class-admin.php:94
+msgid "Clear all cache"
+msgstr ""
+
+#: includes/class-admin.php:104
+msgid "Clear this page's cache"
+msgstr ""
+
+#: includes/class-admin.php:112
+msgid "View this page optimized (test)"
+msgstr ""
+
+#: assets/admin.js:461 includes/class-admin.php:121 includes/class-admin.php:158
+msgid "Settings"
+msgstr ""
+
+#: includes/class-admin.php:129
+msgid "You are not allowed to do this."
+msgstr ""
+
+#: includes/class-admin.php:148
+msgid "Page cache cleared and rebuilt."
+msgstr ""
+
+#: includes/class-admin.php:148
+msgid "Cache cleared. Preloading is rebuilding pages in the background."
+msgstr ""
+
+#: includes/class-admin.php:153
+msgid "another caching plugin is active."
+msgstr ""
+
+#: assets/admin.js:270 includes/class-admin.php:153
+msgid "View diagnostics"
+msgstr ""
+
+#: assets/admin.js:218 includes/class-admin.php:165
+msgid "Clear cache"
+msgstr ""
+
+#: includes/class-ai-report.php:207
+msgid "PageSpeed unavailable (quota?)"
+msgstr ""
+
+#: includes/class-ai.php:84
+msgid "Anthropic rejected the API key."
+msgstr ""
+
+#: assets/admin.js:169 includes/class-ai.php:84
+msgid "Error %d"
+msgstr ""
+
+#: includes/class-ai.php:123
+msgid "Add your Anthropic API key first."
+msgstr ""
+
+#: includes/class-ai.php:132
+msgid "Collecting measurements (server, load, PageSpeed)…"
+msgstr ""
+
+#: includes/class-ai.php:146
+msgid "No recommendation to apply."
+msgstr ""
+
+#: includes/class-ai.php:150
+msgid "Select at least one recommendation."
+msgstr ""
+
+#: includes/class-ai.php:154
+msgid "Applying settings…"
+msgstr ""
+
+#: includes/class-ai.php:196
+msgid "Claude is analyzing your site…"
+msgstr ""
+
+#: includes/class-ai.php:219
+msgid "Automatically applying safe settings…"
+msgstr ""
+
+#: includes/class-ai.php:219
+msgid "No safe change to apply."
+msgstr ""
+
+#: includes/class-ai.php:221
+msgid "Recommendations ready."
+msgstr ""
+
+#: includes/class-ai.php:239
+msgid "Checking: new PageSpeed test on the optimized site…"
+msgstr ""
+
+#: includes/class-ai.php:287
+msgid "the home page no longer displays correctly"
+msgstr ""
+
+#: includes/class-ai.php:290
+msgid "the mobile score dropped (%1$d → %2$d)"
+msgstr ""
+
+#: includes/class-ai.php:293
+msgid "new JavaScript errors detected (%1$d → %2$d)"
+msgstr ""
+
+#: includes/class-ai.php:317
+msgid "Settings rolled back automatically: %s."
+msgstr ""
+
+#: includes/class-ai.php:319
+msgid "Settings applied. Mobile PageSpeed score: %1$d → %2$d."
+msgstr ""
+
+#: includes/class-ai.php:321
+msgid "Settings applied and site checked."
+msgstr ""
+
+#: includes/class-ai.php:395
+msgid "Could not connect to the Claude API: %s"
+msgstr ""
+
+#: includes/class-ai.php:400
+msgid "HTTP error %d"
+msgstr ""
+
+#: includes/class-ai.php:402
+msgid "Invalid API key."
+msgstr ""
+
+#: includes/class-ai.php:404
+msgid "Anthropic rate limit reached, try again in a few minutes."
+msgstr ""
+
+#: includes/class-ai.php:406
+msgid "The Claude API is temporarily overloaded, try again later."
+msgstr ""
+
+#: includes/class-ai.php:413
+msgid "Claude declined this analysis."
+msgstr ""
+
+#: includes/class-ai.php:416
+msgid "Claude's answer was incomplete, try again."
+msgstr ""
+
+#: includes/class-ai.php:427
+msgid "Claude's answer could not be read."
+msgstr ""
+
+#: includes/class-ai.php:627
+msgid "Fulgur Cache: weekly AI analysis"
+msgstr ""
+
+#: includes/class-ai.php:632
+msgid "%d recommendation awaiting approval."
+msgid_plural "%d recommendations awaiting approval."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/class-cdn.php:61
+msgid "Enter your Cloudflare API token and zone ID."
+msgstr ""
+
+#: includes/class-cdn.php:75
+msgid "Cloudflare refused the connection: check the token (“Zone > Cache Purge” permission) and the zone ID."
+msgstr ""
+
+#: includes/class-database.php:19
+msgid "Old post revisions"
+msgstr ""
+
+#: includes/class-database.php:20
+msgid "Auto-drafts"
+msgstr ""
+
+#: includes/class-database.php:21
+msgid "Trashed posts"
+msgstr ""
+
+#: includes/class-database.php:22
+msgid "Spam comments"
+msgstr ""
+
+#: includes/class-database.php:23
+msgid "Trashed comments"
+msgstr ""
+
+#: includes/class-database.php:24
+msgid "Expired transients"
+msgstr ""
+
+#: includes/class-database.php:25
+msgid "Orphaned metadata"
+msgstr ""
+
+#: includes/class-database.php:26
+msgid "Table optimization"
+msgstr ""
+
+#: includes/class-diagnostics.php:42
+msgid "Cache engine active"
+msgstr ""
+
+#: includes/class-diagnostics.php:42
+msgid "Pages are served before WordPress loads."
+msgstr ""
+
+#: includes/class-diagnostics.php:44
+msgid "Another caching plugin is installed"
+msgstr ""
+
+#: includes/class-diagnostics.php:44
+msgid "The wp-content/advanced-cache.php file belongs to another plugin. Deactivate it, then click “Repair”."
+msgstr ""
+
+#: includes/class-diagnostics.php:46
+msgid "WP_CACHE is not enabled"
+msgstr ""
+
+#: includes/class-diagnostics.php:46
+msgid "Add define( 'WP_CACHE', true ); at the top of wp-config.php, or click “Repair” if the file is writable."
+msgstr ""
+
+#: includes/class-diagnostics.php:48
+msgid "Cache engine not loaded"
+msgstr ""
+
+#: includes/class-diagnostics.php:48
+msgid "Click “Repair” to reinstall the drop-in."
+msgstr ""
+
+#: includes/class-diagnostics.php:55
+msgid "Cache folder is writable"
+msgstr ""
+
+#: includes/class-diagnostics.php:56
+msgid "Cache folder is not writable"
+msgstr ""
+
+#: includes/class-diagnostics.php:56
+msgid "Give write permissions (755) to %s"
+msgstr ""
+
+#: includes/class-diagnostics.php:60
+msgid "Pretty permalinks enabled"
+msgstr ""
+
+#: includes/class-diagnostics.php:60
+msgid "Clean URLs make static caching possible."
+msgstr ""
+
+#: includes/class-diagnostics.php:61
+msgid "“Plain” permalinks"
+msgstr ""
+
+#: includes/class-diagnostics.php:61
+msgid "Settings → Permalinks: choose “Post name”. Without it, the cache cannot work."
+msgstr ""
+
+#: includes/class-diagnostics.php:68
+msgid "Static serving via Apache/LiteSpeed"
+msgstr ""
+
+#: includes/class-diagnostics.php:68
+msgid "Cached pages are served without running PHP."
+msgstr ""
+
+#: includes/class-diagnostics.php:69
+msgid ".htaccess rules missing"
+msgstr ""
+
+#: includes/class-diagnostics.php:69
+msgid "The cache works through PHP, but .htaccess rules would make it even faster. Click “Repair” or make .htaccess writable."
+msgstr ""
+
+#: includes/class-diagnostics.php:71
+msgid "Nginx server detected"
+msgstr ""
+
+#: includes/class-diagnostics.php:71
+msgid "The cache already works through PHP (very fast). To serve pages without PHP, copy the Nginx configuration from the Tools tab."
+msgstr ""
+
+#: includes/class-diagnostics.php:76
+msgid "Brotli compression available"
+msgstr ""
+
+#: includes/class-diagnostics.php:76
+msgid "Pages ~20% smaller than with gzip."
+msgstr ""
+
+#: includes/class-diagnostics.php:77
+msgid "Brotli unavailable, using gzip"
+msgstr ""
+
+#: includes/class-diagnostics.php:77
+msgid "Optional: ask your host for the “brotli” PHP extension."
+msgstr ""
+
+#: includes/class-diagnostics.php:81
+msgid "WebP conversion available"
+msgstr ""
+
+#: includes/class-diagnostics.php:81
+msgid "AVIF is available too."
+msgstr ""
+
+#: includes/class-diagnostics.php:81
+msgid "AVIF unavailable on this server (Imagick or PHP 8.1+ with libavif required)."
+msgstr ""
+
+#: includes/class-diagnostics.php:82
+msgid "WebP conversion unavailable"
+msgstr ""
+
+#: includes/class-diagnostics.php:82
+msgid "Neither GD with WebP nor Imagick is available. Contact your host."
+msgstr ""
+
+#: includes/class-diagnostics.php:86
+msgid "Persistent object cache active"
+msgstr ""
+
+#: includes/class-diagnostics.php:86
+msgid "Redis/Memcached speeds up the admin and uncached pages."
+msgstr ""
+
+#: includes/class-diagnostics.php:87
+msgid "No persistent object cache"
+msgstr ""
+
+#: includes/class-diagnostics.php:87
+msgid "If your host offers Redis, enable it: the admin and WooCommerce will be much faster."
+msgstr ""
+
+#: includes/class-diagnostics.php:91
+msgid "Modern and fast version."
+msgstr ""
+
+#: includes/class-diagnostics.php:92
+msgid "PHP %s is outdated"
+msgstr ""
+
+#: includes/class-diagnostics.php:92
+msgid "Switch to PHP 8.2 or later with your host: up to 30% faster uncached pages."
+msgstr ""
+
+#: includes/class-diagnostics.php:103
+msgid "Conflicting plugin(s): %s"
+msgstr ""
+
+#: includes/class-diagnostics.php:103
+msgid "Two caching plugins get in each other's way and slow the site down. Deactivate them."
+msgstr ""
+
+#: includes/class-diagnostics.php:104
+msgid "No conflicting plugins"
+msgstr ""
+
+#: includes/class-installer.php:81
+msgid "Another caching plugin is already using advanced-cache.php."
+msgstr ""
+
+#: includes/class-installer.php:89
+msgid "Cannot write wp-content/advanced-cache.php."
+msgstr ""
+
+#: includes/class-media.php:122
+msgid "Play video"
+msgstr ""
+
+#: includes/class-metrics.php:65
+msgid "Pages served directly by .htaccess/Nginx (without PHP) are not counted."
+msgstr ""
+
+#: includes/class-plugin.php:54
+msgid "Every 5 minutes (Fulgur)"
+msgstr ""
+
+#: includes/class-rest.php:198
+msgid "Invalid settings file."
+msgstr ""
+
+#: includes/class-settings.php:102
+msgid "Safe"
+msgstr ""
+
+#: includes/class-settings.php:103
+msgid "Cache + compression + media. Zero risk of breakage, works with 100% of themes."
+msgstr ""
+
+#: includes/class-settings.php:104
+msgid "+40 to 60% faster"
+msgstr ""
+
+#: includes/class-settings.php:122
+msgid "Balanced"
+msgstr ""
+
+#: includes/class-settings.php:123
+msgid "Recommended. Adds critical CSS, minification, deferred JavaScript, YouTube facades and instant prerendering."
+msgstr ""
+
+#: includes/class-settings.php:124
+msgid "+60 to 80% faster"
+msgstr ""
+
+#: includes/class-settings.php:142
+msgid "Turbo"
+msgstr ""
+
+#: includes/class-settings.php:143
+msgid "Maximum performance: unused CSS removed, JavaScript loaded on first interaction, Google Fonts hosted locally (GDPR)."
+msgstr ""
+
+#: includes/class-settings.php:144
+msgid "Targets a 90+ PageSpeed score"
+msgstr ""
+
+#: assets/admin.js:19
+msgid "No risk"
+msgstr ""
+
+#: assets/admin.js:20
+msgid "Test it"
+msgstr ""
+
+#: assets/admin.js:21
+msgid "Advanced"
+msgstr ""
+
+#: assets/admin.js:25
+msgid "Dashboard"
+msgstr ""
+
+#: assets/admin.js:26
+msgid "AI Optimizer"
+msgstr ""
+
+#: assets/admin.js:27
+msgid "Analysis and optimization by Claude"
+msgstr ""
+
+#: assets/admin.js:28
+msgid "Connection to Claude"
+msgstr ""
+
+#: assets/admin.js:29
+msgid "Model"
+msgstr ""
+
+#: assets/admin.js:29
+msgid "Claude Opus 5.5 — most accurate (≈ $0.15 to $0.40 per analysis)"
+msgstr ""
+
+#: assets/admin.js:29
+msgid "Claude Sonnet 5.5 — balanced (≈ $0.08 to $0.20)"
+msgstr ""
+
+#: assets/admin.js:29
+msgid "Claude Haiku 5.5 — budget (≈ $0.01)"
+msgstr ""
+
+#: assets/admin.js:29
+msgid "Billed directly by Anthropic on your API key. One analysis a week is enough."
+msgstr ""
+
+#: assets/admin.js:30
+msgid "Include Google PageSpeed measurements"
+msgstr ""
+
+#: assets/admin.js:30
+msgid "Claude gets the real Core Web Vitals (LCP, TBT, CLS) and the issues found by Lighthouse. Adds 1 to 2 minutes to the analysis."
+msgstr ""
+
+#: assets/admin.js:31
+msgid "Autopilot"
+msgstr ""
+
+#: assets/admin.js:31 assets/admin.js:55 assets/admin.js:86
+msgid "Off"
+msgstr ""
+
+#: assets/admin.js:31
+msgid "Analyze every week and email me the recommendations"
+msgstr ""
+
+#: assets/admin.js:31
+msgid "Analyze and apply safe settings every week (automatic rollback if the score drops)"
+msgstr ""
+
+#: assets/admin.js:33
+msgid "History"
+msgstr ""
+
+#: assets/admin.js:35
+msgid "Cache"
+msgstr ""
+
+#: assets/admin.js:36
+msgid "Page cache"
+msgstr ""
+
+#: assets/admin.js:37
+msgid "Enable page cache"
+msgstr ""
+
+#: assets/admin.js:37
+msgid "Each page is generated once, then served as static HTML, without PHP or database. This is the setting that brings the most speed."
+msgstr ""
+
+#: assets/admin.js:38
+msgid "Cache lifespan"
+msgstr ""
+
+#: assets/admin.js:38
+msgid "hours"
+msgstr ""
+
+#: assets/admin.js:38
+msgid "Pages are regenerated after this delay. 0 = never (automatic purging is enough in 99% of cases)."
+msgstr ""
+
+#: assets/admin.js:39
+msgid "Compression and browser cache"
+msgstr ""
+
+#: assets/admin.js:39
+msgid "Brotli/gzip + one-year caching of images, CSS, JS and fonts in the visitor's browser."
+msgstr ""
+
+#: assets/admin.js:40
+msgid "Separate mobile cache"
+msgstr ""
+
+#: assets/admin.js:40
+msgid "Only if your theme generates different HTML on mobile (rare). Leave off for a responsive theme."
+msgstr ""
+
+#: assets/admin.js:41
+msgid "Cache 404 pages"
+msgstr ""
+
+#: assets/admin.js:41
+msgid "Protects the server against bots probing non-existent URLs."
+msgstr ""
+
+#: assets/admin.js:43
+msgid "Exclusions"
+msgstr ""
+
+#: assets/admin.js:44
+msgid "URLs never cached"
+msgstr ""
+
+#: assets/admin.js:44
+msgid "One per line. Accepts part of a URL (/cart/), a wildcard (/account/*) or a regex (#^/private#)."
+msgstr ""
+
+#: assets/admin.js:45
+msgid "Ignored URL parameters"
+msgstr ""
+
+#: assets/admin.js:45
+msgid "Campaign links (utm_source, fbclid…) get the same cached page instead of regenerating it."
+msgstr ""
+
+#: assets/admin.js:46
+msgid "Cookies that disable the cache"
+msgstr ""
+
+#: assets/admin.js:46
+msgid "One name (or name prefix) per line. Login and WooCommerce cart cookies are already handled."
+msgstr ""
+
+#: assets/admin.js:47
+msgid "Excluded browsers / bots"
+msgstr ""
+
+#: assets/admin.js:47
+msgid "Part of the User-Agent, one per line."
+msgstr ""
+
+#: assets/admin.js:50
+msgid "CSS & JavaScript"
+msgstr ""
+
+#: assets/admin.js:51
+msgid "HTML & CSS"
+msgstr ""
+
+#: assets/admin.js:52
+msgid "Minify HTML"
+msgstr ""
+
+#: assets/admin.js:52
+msgid "Removes comments and useless whitespace."
+msgstr ""
+
+#: assets/admin.js:53
+msgid "Minify CSS"
+msgstr ""
+
+#: assets/admin.js:53
+msgid "Lighter CSS files, cached for one year."
+msgstr ""
+
+#: assets/admin.js:54
+msgid "Visible text while fonts load"
+msgstr ""
+
+#: assets/admin.js:54
+msgid "Adds font-display: swap: text shows immediately with a system font."
+msgstr ""
+
+#: assets/admin.js:55
+msgid "Critical CSS / unused CSS"
+msgstr ""
+
+#: assets/admin.js:55
+msgid "Critical CSS: used CSS inlined, the rest loaded async (recommended)"
+msgstr ""
+
+#: assets/admin.js:55
+msgid "Remove unused CSS: the rest is only loaded on first interaction"
+msgstr ""
+
+#: assets/admin.js:55
+msgid "Each page only gets the CSS rules it uses, right in the HTML: no CSS blocks rendering anymore. Computed on your server, no external service."
+msgstr ""
+
+#: assets/admin.js:56
+msgid "CSS classes always kept"
+msgstr ""
+
+#: assets/admin.js:56
+msgid "Classes added by JavaScript (open menus, sliders, pop-ups). Part of a name, one per line."
+msgstr ""
+
+#: assets/admin.js:57
+msgid "Google Fonts"
+msgstr ""
+
+#: assets/admin.js:57
+msgid "Leave unchanged"
+msgstr ""
+
+#: assets/admin.js:57
+msgid "Optimize (swap + preconnect)"
+msgstr ""
+
+#: assets/admin.js:57
+msgid "Host locally (GDPR + faster)"
+msgstr ""
+
+#: assets/admin.js:57
+msgid "Local hosting removes the connection to Google: faster and GDPR-compliant."
+msgstr ""
+
+#: assets/admin.js:59
+msgid "JavaScript"
+msgstr ""
+
+#: assets/admin.js:60
+msgid "Defer JavaScript"
+msgstr ""
+
+#: assets/admin.js:60
+msgid "Scripts run after the page is displayed, in their original order."
+msgstr ""
+
+#: assets/admin.js:61
+msgid "Scripts not to defer"
+msgstr ""
+
+#: assets/admin.js:61
+msgid "Part of a URL or code, one per line."
+msgstr ""
+
+#: assets/admin.js:62
+msgid "Load JavaScript on first interaction"
+msgstr ""
+
+#: assets/admin.js:62
+msgid "The most spectacular PageSpeed gain: no script runs until the visitor moves the mouse, touches the screen or scrolls. Test your site after enabling it."
+msgstr ""
+
+#: assets/admin.js:63
+msgid "Force loading after"
+msgstr ""
+
+#: assets/admin.js:63
+msgid "seconds"
+msgstr ""
+
+#: assets/admin.js:63
+msgid "0 = on interaction only. Use 5 to 10 s if you have analytics scripts."
+msgstr ""
+
+#: assets/admin.js:64
+msgid "Scripts to load immediately"
+msgstr ""
+
+#: assets/admin.js:64
+msgid "Part of a URL or code, one per line (e.g. cookie banner, slider at the top of the page)."
+msgstr ""
+
+#: assets/admin.js:67
+msgid "Media"
+msgstr ""
+
+#: assets/admin.js:68
+msgid "Image loading"
+msgstr ""
+
+#: assets/admin.js:69
+msgid "Lazy-load images"
+msgstr ""
+
+#: assets/admin.js:69
+msgid "Offscreen images only load as the visitor scrolls near them (native browser lazy-loading)."
+msgstr ""
+
+#: assets/admin.js:70
+msgid "Top-of-page images never lazy-loaded"
+msgstr ""
+
+#: assets/admin.js:70
+msgid "images"
+msgstr ""
+
+#: assets/admin.js:70
+msgid "The largest visible image (LCP) is detected automatically, preloaded and prioritized."
+msgstr ""
+
+#: assets/admin.js:71
+msgid "Add missing dimensions"
+msgstr ""
+
+#: assets/admin.js:71
+msgid "Removes layout shifts (CLS)."
+msgstr ""
+
+#: assets/admin.js:72
+msgid "Lazy-load iframes"
+msgstr ""
+
+#: assets/admin.js:72
+msgid "Maps, forms, embedded videos."
+msgstr ""
+
+#: assets/admin.js:73
+msgid "YouTube facade"
+msgstr ""
+
+#: assets/admin.js:73
+msgid "Shows a thumbnail instead of the player (−1 MB per video). The player loads on click."
+msgstr ""
+
+#: assets/admin.js:75
+msgid "Next-gen formats"
+msgstr ""
+
+#: assets/admin.js:76
+msgid "Convert and serve WebP / AVIF"
+msgstr ""
+
+#: assets/admin.js:76
+msgid "Images 30 to 50% lighter, with no visible loss. Originals are kept."
+msgstr ""
+
+#: assets/admin.js:77
+msgid "Format"
+msgstr ""
+
+#: assets/admin.js:77
+msgid "WebP (recommended, no impact on the theme)"
+msgstr ""
+
+#: assets/admin.js:77
+msgid "AVIF + WebP (lightest, via <picture>)"
+msgstr ""
+
+#: assets/admin.js:78
+msgid "Quality"
+msgstr ""
+
+#: assets/admin.js:78
+msgid "78 is the best size / quality trade-off."
+msgstr ""
+
+#: assets/admin.js:81
+msgid "Preloading"
+msgstr ""
+
+#: assets/admin.js:82
+msgid "Always-warm cache"
+msgstr ""
+
+#: assets/admin.js:83
+msgid "Preload the cache"
+msgstr ""
+
+#: assets/admin.js:83
+msgid "After each purge, every page is regenerated in the background: no visitor ever hits a slow page."
+msgstr ""
+
+#: assets/admin.js:85
+msgid "Instant navigation"
+msgstr ""
+
+#: assets/admin.js:86
+msgid "Speculation Rules"
+msgstr ""
+
+#: assets/admin.js:86
+msgid "Prefetch (downloads the next page)"
+msgstr ""
+
+#: assets/admin.js:86
+msgid "Prerender (shows the next page instantly)"
+msgstr ""
+
+#: assets/admin.js:86
+msgid "Native Chrome/Edge technology: the next page is prepared while the visitor hovers the link. Click = displayed in 0 ms."
+msgstr ""
+
+#: assets/admin.js:87
+msgid "Trigger"
+msgstr ""
+
+#: assets/admin.js:87
+msgid "On click (light)"
+msgstr ""
+
+#: assets/admin.js:87
+msgid "On hover (recommended)"
+msgstr ""
+
+#: assets/admin.js:87
+msgid "As soon as possible (heavy)"
+msgstr ""
+
+#: assets/admin.js:88
+msgid "Hover preloading for Safari and Firefox"
+msgstr ""
+
+#: assets/admin.js:88
+msgid "Lightweight equivalent (1 KB) for browsers without Speculation Rules."
+msgstr ""
+
+#: assets/admin.js:89
+msgid "Preload headers (103 Early Hints)"
+msgstr ""
+
+#: assets/admin.js:89
+msgid "The browser starts downloading the main image and fonts before it even receives the HTML (Cloudflare, LiteSpeed)."
+msgstr ""
+
+#: assets/admin.js:90
+msgid "Domains to preconnect"
+msgstr ""
+
+#: assets/admin.js:90
+msgid "Critical third-party domains, one per line (e.g. cdn.example.com)."
+msgstr ""
+
+#: assets/admin.js:93
+msgid "WP cleanup"
+msgstr ""
+
+#: assets/admin.js:94
+msgid "What WordPress loads for nothing"
+msgstr ""
+
+#: assets/admin.js:95
+msgid "Disable WordPress emojis"
+msgstr ""
+
+#: assets/admin.js:95
+msgid "Browsers display emojis natively. −1 request."
+msgstr ""
+
+#: assets/admin.js:96
+msgid "Disable WordPress embeds"
+msgstr ""
+
+#: assets/admin.js:96
+msgid "Removes wp-embed.js. YouTube videos, tweets, etc. still work."
+msgstr ""
+
+#: assets/admin.js:97
+msgid "Remove Dashicons for visitors"
+msgstr ""
+
+#: assets/admin.js:97
+msgid "Admin icon font (46 KB) useless on the public site."
+msgstr ""
+
+#: assets/admin.js:98
+msgid "Clean the HTML head"
+msgstr ""
+
+#: assets/admin.js:98
+msgid "Removes RSD, WLW, shortlink and the WordPress version (security)."
+msgstr ""
+
+#: assets/admin.js:99
+msgid "Disable XML-RPC"
+msgstr ""
+
+#: assets/admin.js:99
+msgid "Closes an entry point for brute-force attacks. Turn off if you use the WordPress mobile app or Jetpack."
+msgstr ""
+
+#: assets/admin.js:100
+msgid "Remove jQuery Migrate"
+msgstr ""
+
+#: assets/admin.js:100
+msgid "Useless with up-to-date themes and plugins."
+msgstr ""
+
+#: assets/admin.js:101
+msgid "Heartbeat API"
+msgstr ""
+
+#: assets/admin.js:101
+msgid "Default (15 s)"
+msgstr ""
+
+#: assets/admin.js:101
+msgid "Reduced (60 s)"
+msgstr ""
+
+#: assets/admin.js:101
+msgid "Disabled on the public site"
+msgstr ""
+
+#: assets/admin.js:101
+msgid "Disabled everywhere except the editor"
+msgstr ""
+
+#: assets/admin.js:101
+msgid "Regular AJAX requests that load the server."
+msgstr ""
+
+#: assets/admin.js:102
+msgid "WooCommerce: disable cart-fragments outside the shop"
+msgstr ""
+
+#: assets/admin.js:102
+msgid "Removes an uncacheable AJAX request on every non-shop page."
+msgstr ""
+
+#: assets/admin.js:105
+msgid "Database"
+msgstr ""
+
+#: assets/admin.js:106
+msgid "Cleanup"
+msgstr ""
+
+#: assets/admin.js:107
+msgid "Automation"
+msgstr ""
+
+#: assets/admin.js:108
+msgid "Weekly automatic cleanup"
+msgstr ""
+
+#: assets/admin.js:108
+msgid "Revisions, auto-drafts, spam, trash, expired transients."
+msgstr ""
+
+#: assets/admin.js:109
+msgid "Revisions kept per post"
+msgstr ""
+
+#: assets/admin.js:109
+msgid "revisions"
+msgstr ""
+
+#: assets/admin.js:112 assets/admin.js:113
+msgid "CDN"
+msgstr ""
+
+#: assets/admin.js:114
+msgid "Serve static files through a CDN"
+msgstr ""
+
+#: assets/admin.js:114
+msgid "Images, CSS, JS and fonts are served from the CDN (BunnyCDN, KeyCDN…)."
+msgstr ""
+
+#: assets/admin.js:115
+msgid "CDN URL"
+msgstr ""
+
+#: assets/admin.js:116
+msgid "Files excluded from the CDN"
+msgstr ""
+
+#: assets/admin.js:118
+msgid "Cloudflare"
+msgstr ""
+
+#: assets/admin.js:119
+msgid "API token"
+msgstr ""
+
+#: assets/admin.js:119
+msgid "Permission: Zone › Cache Purge"
+msgstr ""
+
+#: assets/admin.js:119
+msgid "The Cloudflare cache is cleared automatically together with the site cache."
+msgstr ""
+
+#: assets/admin.js:120
+msgid "Zone ID"
+msgstr ""
+
+#: assets/admin.js:120
+msgid "Shown on the Cloudflare domain overview"
+msgstr ""
+
+#: assets/admin.js:123
+msgid "Tools"
+msgstr ""
+
+#: assets/admin.js:124
+msgid "Full diagnostics"
+msgstr ""
+
+#: assets/admin.js:125
+msgid "Nginx configuration"
+msgstr ""
+
+#: assets/admin.js:126
+msgid "Settings backup"
+msgstr ""
+
+#: assets/admin.js:153
+msgid "B"
+msgstr ""
+
+#: assets/admin.js:153
+msgid "KB"
+msgstr ""
+
+#: assets/admin.js:153
+msgid "MB"
+msgstr ""
+
+#: assets/admin.js:153
+msgid "GB"
+msgstr ""
+
+#: assets/admin.js:199
+msgid "Working…"
+msgstr ""
+
+#: assets/admin.js:214
+msgid "Cache disabled"
+msgstr ""
+
+#: assets/admin.js:216
+msgid "View the home page with optimizations, without caching anything"
+msgstr ""
+
+#: assets/admin.js:216
+msgid "Test safely"
+msgstr ""
+
+#: assets/admin.js:217
+msgid "Preload"
+msgstr ""
+
+#: assets/admin.js:221
+msgid "Sections"
+msgstr ""
+
+#: assets/admin.js:233
+msgid "Unsaved changes"
+msgstr ""
+
+#: assets/admin.js:234
+msgid "Discard"
+msgstr ""
+
+#: assets/admin.js:235
+msgid "Save and apply"
+msgstr ""
+
+#: assets/admin.js:258
+msgid "Your site responds %s faster"
+msgstr ""
+
+#: assets/admin.js:258
+msgid "Measure your site's speed gain"
+msgstr ""
+
+#: assets/admin.js:260
+msgid "Server response time: %1$s ms without cache → %2$s ms with Fulgur."
+msgstr ""
+
+#: assets/admin.js:260
+msgid "The test compares your home page response time without and with cache."
+msgstr ""
+
+#: assets/admin.js:261
+msgid "Run server test"
+msgstr ""
+
+#: assets/admin.js:262
+msgid "Mobile PageSpeed score"
+msgstr ""
+
+#: assets/admin.js:263
+msgid "Optimize with AI"
+msgstr ""
+
+#: assets/admin.js:267
+msgid "Cached pages"
+msgstr ""
+
+#: assets/admin.js:268
+msgid "Preloaded pages"
+msgstr ""
+
+#: assets/admin.js:268
+msgid "%d queued"
+msgstr ""
+
+#: assets/admin.js:268
+msgid "Queue empty"
+msgstr ""
+
+#: assets/admin.js:269
+msgid "Images"
+msgstr ""
+
+#: assets/admin.js:269
+msgid "WebP + AVIF available"
+msgstr ""
+
+#: assets/admin.js:269
+msgid "WebP available"
+msgstr ""
+
+#: assets/admin.js:269
+msgid "Conversion unavailable"
+msgstr ""
+
+#: assets/admin.js:270
+msgid "Health"
+msgstr ""
+
+#: assets/admin.js:270
+msgid "Perfect"
+msgstr ""
+
+#: assets/admin.js:273
+msgid "Optimization level"
+msgstr ""
+
+#: assets/admin.js:273
+msgid "One click is enough. You can then fine-tune each setting."
+msgstr ""
+
+#: assets/admin.js:277
+msgid "To fix"
+msgstr ""
+
+#: assets/admin.js:292
+msgid "Recommended"
+msgstr ""
+
+#: assets/admin.js:294
+msgid "Active"
+msgstr ""
+
+#: assets/admin.js:297
+msgid "Custom settings active."
+msgstr ""
+
+#: assets/admin.js:298
+msgid "Settings optimized by AI for your server."
+msgstr ""
+
+#: assets/admin.js:307
+msgid "Repair"
+msgstr ""
+
+#: assets/admin.js:308
+msgid "View"
+msgstr ""
+
+#: assets/admin.js:357
+msgid "Measurements"
+msgstr ""
+
+#: assets/admin.js:358
+msgid "Claude analysis"
+msgstr ""
+
+#: assets/admin.js:359
+msgid "Recommendations"
+msgstr ""
+
+#: assets/admin.js:360
+msgid "Applying"
+msgstr ""
+
+#: assets/admin.js:361
+msgid "Verification"
+msgstr ""
+
+#: assets/admin.js:363
+msgid "Critical"
+msgstr ""
+
+#: assets/admin.js:363
+msgid "High"
+msgstr ""
+
+#: assets/admin.js:363
+msgid "Medium"
+msgstr ""
+
+#: assets/admin.js:363
+msgid "Low"
+msgstr ""
+
+#: assets/admin.js:375
+msgid "on"
+msgstr ""
+
+#: assets/admin.js:376
+msgid "off"
+msgstr ""
+
+#: assets/admin.js:387
+msgid "Claude analyzes your server, the real load, the HTML and the PageSpeed measurements, then picks the best settings for your site."
+msgstr ""
+
+#: assets/admin.js:388
+msgid "Fulgur applies them, measures again and rolls back automatically if the score drops or an error appears."
+msgstr ""
+
+#: assets/admin.js:389
+msgid "To start, paste your Anthropic API key below (console.anthropic.com → API Keys)."
+msgstr ""
+
+#: assets/admin.js:402
+msgid "Ready for a first analysis"
+msgstr ""
+
+#: assets/admin.js:402
+msgid "New analysis"
+msgstr ""
+
+#: assets/admin.js:402
+msgid "Takes 1 to 4 minutes. Only technical data is sent (no content, no personal data)."
+msgstr ""
+
+#: assets/admin.js:403
+msgid "Analyze and optimize my site"
+msgstr ""
+
+#: assets/admin.js:408
+msgid "Expected gain:"
+msgstr ""
+
+#: assets/admin.js:410
+msgid "Diagnosis"
+msgstr ""
+
+#: assets/admin.js:417
+msgid "Proposed settings"
+msgstr ""
+
+#: assets/admin.js:424
+msgid "Your current settings are backed up: one click is enough to go back."
+msgstr ""
+
+#: assets/admin.js:424
+msgid "Apply and verify"
+msgstr ""
+
+#: assets/admin.js:426
+msgid "No change needed: your configuration is already optimal for this server."
+msgstr ""
+
+#: assets/admin.js:429
+msgid "On the hosting side"
+msgstr ""
+
+#: assets/admin.js:432
+msgid "Model: %1$s · %2$s tokens sent, %3$s received."
+msgstr ""
+
+#: assets/admin.js:442
+msgid "The last settings applied by the AI can be undone."
+msgstr ""
+
+#: assets/admin.js:442
+msgid "Restore previous settings"
+msgstr ""
+
+#: assets/admin.js:448
+msgid "Anthropic API key"
+msgstr ""
+
+#: assets/admin.js:449
+msgid "Defined in wp-config.php (FULGUR_ANTHROPIC_API_KEY)."
+msgstr ""
+
+#: assets/admin.js:449
+msgid "Stored on your server, never sent back to the browser. Safer: define it in wp-config.php with"
+msgstr ""
+
+#: assets/admin.js:451
+msgid "Connected"
+msgstr ""
+
+#: assets/admin.js:451
+msgid "Remove"
+msgstr ""
+
+#: assets/admin.js:452
+msgid "Connect"
+msgstr ""
+
+#: assets/admin.js:454
+msgid "PageSpeed API key (optional)"
+msgstr ""
+
+#: assets/admin.js:454
+msgid "Without a key, Google limits the number of analyses. Free on console.cloud.google.com."
+msgstr ""
+
+#: assets/admin.js:455
+msgid "(saved)"
+msgstr ""
+
+#: assets/admin.js:455
+msgid "Save"
+msgstr ""
+
+#: assets/admin.js:460
+msgid "No optimization applied yet."
+msgstr ""
+
+#: assets/admin.js:461
+msgid "Date"
+msgstr ""
+
+#: assets/admin.js:461
+msgid "Mode"
+msgstr ""
+
+#: assets/admin.js:461
+msgid "Mobile score"
+msgstr ""
+
+#: assets/admin.js:461
+msgid "Result"
+msgstr ""
+
+#: assets/admin.js:462
+msgid "Automatic"
+msgstr ""
+
+#: assets/admin.js:462
+msgid "Manual"
+msgstr ""
+
+#: assets/admin.js:462
+msgid "Rolled back"
+msgstr ""
+
+#: assets/admin.js:462
+msgid "Applied"
+msgstr ""
+
+#: assets/admin.js:466
+msgid "Image conversion is not available on this server (GD with WebP or Imagick required)."
+msgstr ""
+
+#: assets/admin.js:469
+msgid "New images are converted automatically on upload; theme images are converted in the background."
+msgstr ""
+
+#: assets/admin.js:470
+msgid "(%d queued)"
+msgstr ""
+
+#: assets/admin.js:471
+msgid "Existing media library"
+msgstr ""
+
+#: assets/admin.js:473
+msgid "Convert the whole media library"
+msgstr ""
+
+#: assets/admin.js:477
+msgid "All pages are ready"
+msgstr ""
+
+#: assets/admin.js:478
+msgid "Preload everything now"
+msgstr ""
+
+#: assets/admin.js:483
+msgid "Analyzing the database…"
+msgstr ""
+
+#: assets/admin.js:488
+msgid "OK"
+msgstr ""
+
+#: assets/admin.js:490
+msgid "Recent revisions (see the setting below) are always kept."
+msgstr ""
+
+#: assets/admin.js:490
+msgid "Clean selection"
+msgstr ""
+
+#: assets/admin.js:493
+msgid "Save your credentials first, then test the connection."
+msgstr ""
+
+#: assets/admin.js:493
+msgid "Test connection"
+msgstr ""
+
+#: assets/admin.js:496
+msgid "Reinstalls the cache engine, wp-config.php and the .htaccess rules."
+msgstr ""
+
+#: assets/admin.js:496
+msgid "Repair everything"
+msgstr ""
+
+#: assets/admin.js:499
+msgid "On Nginx, the cache already works through PHP. For 100% static serving, add this block to the server configuration (or send it to your host)."
+msgstr ""
+
+#: assets/admin.js:500
+msgid "Copy"
+msgstr ""
+
+#: assets/admin.js:503
+msgid "Transfer your settings to another site."
+msgstr ""
+
+#: assets/admin.js:504
+msgid "Export"
+msgstr ""
+
+#: assets/admin.js:505
+msgid "Import"
+msgstr ""
+
+#: assets/admin.js:506
+msgid "Reset"
+msgstr ""
+
+#: assets/admin.js:512
+msgid "Welcome to Fulgur Cache"
+msgstr ""
+
+#: assets/admin.js:513
+msgid "The cache is already active. Now choose your optimization level: you can change it at any time."
+msgstr ""
+
+#: assets/admin.js:515
+msgid "Skip, I'll configure it myself"
+msgstr ""
+
+#: assets/admin.js:516
+msgid "Optimizing…"
+msgstr ""
+
+#: assets/admin.js:517
+msgid "Applying settings"
+msgstr ""
+
+#: assets/admin.js:517
+msgid "Preloading pages"
+msgstr ""
+
+#: assets/admin.js:517
+msgid "Measuring speed"
+msgstr ""
+
+#: assets/admin.js:531
+msgid "Clearing…"
+msgstr ""
+
+#: assets/admin.js:532
+msgid "Cache cleared. Pages are being rebuilt in the background."
+msgstr ""
+
+#: assets/admin.js:536 assets/admin.js:677
+msgid "Starting…"
+msgstr ""
+
+#: assets/admin.js:541
+msgid "Saving…"
+msgstr ""
+
+#: assets/admin.js:543
+msgid "Settings applied. Cache cleared and being rebuilt."
+msgstr ""
+
+#: assets/admin.js:550
+msgid "Applying this profile will replace your unsaved changes. Continue?"
+msgstr ""
+
+#: assets/admin.js:551 assets/admin.js:683
+msgid "Applying…"
+msgstr ""
+
+#: assets/admin.js:554
+msgid "“%s” profile applied."
+msgstr ""
+
+#: assets/admin.js:563
+msgid "Repairing…"
+msgstr ""
+
+#: assets/admin.js:567
+msgid "Some items need manual action."
+msgstr ""
+
+#: assets/admin.js:567
+msgid "Everything is repaired."
+msgstr ""
+
+#: assets/admin.js:571
+msgid "Measuring…"
+msgstr ""
+
+#: assets/admin.js:577
+msgid "Google analysis (30 s)…"
+msgstr ""
+
+#: assets/admin.js:581
+msgid "Analysis failed"
+msgstr ""
+
+#: assets/admin.js:590
+msgid "PageSpeed unavailable (%s)."
+msgstr ""
+
+#: assets/admin.js:590
+msgid "Open PageSpeed Insights"
+msgstr ""
+
+#: assets/admin.js:596
+msgid "Converting…"
+msgstr ""
+
+#: assets/admin.js:610
+msgid "Select at least one item."
+msgstr ""
+
+#: assets/admin.js:611
+msgid "Cleanup is permanent. Make sure you have a recent backup. Continue?"
+msgstr ""
+
+#: assets/admin.js:612
+msgid "Cleaning…"
+msgstr ""
+
+#: assets/admin.js:618
+msgid "Save your Cloudflare credentials first."
+msgstr ""
+
+#: assets/admin.js:619
+msgid "Testing…"
+msgstr ""
+
+#: assets/admin.js:621
+msgid "Connected to Cloudflare: %s"
+msgstr ""
+
+#: assets/admin.js:625
+msgid "Configuration copied."
+msgstr ""
+
+#: assets/admin.js:636
+msgid "Go back to the default settings (Balanced profile)?"
+msgstr ""
+
+#: assets/admin.js:638
+msgid "Settings reset."
+msgstr ""
+
+#: assets/admin.js:660
+msgid "Paste your Anthropic API key."
+msgstr ""
+
+#: assets/admin.js:661
+msgid "Checking…"
+msgstr ""
+
+#: assets/admin.js:662
+msgid "Claude is connected."
+msgstr ""
+
+#: assets/admin.js:666
+msgid "Remove the API key? Autopilot will be disabled."
+msgstr ""
+
+#: assets/admin.js:672
+msgid "PageSpeed key saved."
+msgstr ""
+
+#: assets/admin.js:676
+msgid "Save your changes first."
+msgstr ""
+
+#: assets/admin.js:688
+msgid "Go back to the settings from before the last AI optimization?"
+msgstr ""
+
+#: assets/admin.js:690
+msgid "Previous settings restored."
+msgstr ""
+
+#: assets/admin.js:714
+msgid "faster: %1$s ms → %2$s ms"
+msgstr ""
+
+#: assets/admin.js:715
+msgid "Your site is optimized."
+msgstr ""
+
+#: assets/admin.js:716
+msgid "Go to my dashboard"
+msgstr ""
+
+#: assets/admin.js:719
+msgid "Continue"
+msgstr ""
+
+#: assets/admin.js:773
+msgid "Settings imported."
+msgstr ""
+
+#: assets/admin.js:214
+msgid "Cache active · %d page"
+msgid_plural "Cache active · %d pages"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/admin.js:270
+msgid "%d issue"
+msgid_plural "%d issues"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/admin.js:270
+msgid "%d check passed"
+msgid_plural "%d checks passed"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/admin.js:380
+msgid "%d entry"
+msgid_plural "%d entries"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/admin.js:468
+msgid "%d JPEG/PNG image."
+msgid_plural "%d JPEG/PNG images."
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/admin.js:477
+msgid "%d page being preloaded"
+msgid_plural "%d pages being preloaded"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/admin.js:477
+msgid "%d page preloaded in total."
+msgid_plural "%d pages preloaded in total."
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/admin.js:488
+msgid "%d table"
+msgid_plural "%d tables"
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/admin.js:537
+msgid "Preloading started: %d page."
+msgid_plural "Preloading started: %d pages."
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/admin.js:604
+msgid "%d file converted. The cache is being rebuilt with the new images."
+msgid_plural "%d files converted. The cache is being rebuilt with the new images."
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/admin.js:614
+msgid "%d item removed."
+msgid_plural "%d items removed."
+msgstr[0] ""
+msgstr[1] ""
+

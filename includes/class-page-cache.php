@@ -80,7 +80,7 @@ class Page_Cache {
 		$html    = ( new Optimizer() )->process( $html );
 
 		if ( $this->preview ) {
-			return $html . "\n<!-- Fulgur Cache : prévisualisation des optimisations (non mise en cache) -->";
+			return $html . "\n<!-- Fulgur Cache: optimization preview (not cached) -->";
 		}
 
 		if ( ! $this->cacheable || ( defined( 'DONOTCACHEPAGE' ) && DONOTCACHEPAGE ) || http_response_code() !== ( is_404() ? 404 : 200 ) ) {
@@ -88,7 +88,7 @@ class Page_Cache {
 		}
 
 		$html .= sprintf(
-			"\n<!-- Fulgur Cache : page optimisée en %d ms et mise en cache le %s -->",
+			"\n<!-- Fulgur Cache: page optimized in %d ms and cached on %s -->",
 			(int) round( ( microtime( true ) - $started ) * 1000 ),
 			gmdate( 'Y-m-d H:i:s' ) . ' UTC'
 		);

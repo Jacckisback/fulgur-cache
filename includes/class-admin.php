@@ -41,8 +41,8 @@ class Admin {
 	}
 
 	public function render() {
-		echo '<div class="wrap fulgur-wrap"><div id="fulgur-app"><div class="fulgur-loading">Chargement…</div></div>'
-			. '<noscript>Fulgur Cache nécessite JavaScript pour son interface.</noscript></div>';
+		echo '<div class="wrap fulgur-wrap"><div id="fulgur-app"><div class="fulgur-loading">' . esc_html__( 'Loading…', 'fulgur-cache' ) . '</div></div>'
+			. '<noscript>' . esc_html__( 'Fulgur Cache needs JavaScript for its interface.', 'fulgur-cache' ) . '</noscript></div>';
 	}
 
 	public function assets( $hook ) {
@@ -50,7 +50,8 @@ class Admin {
 			return;
 		}
 		wp_enqueue_style( 'fulgur-admin', FULGUR_URL . 'assets/admin.css', array(), FULGUR_VERSION );
-		wp_enqueue_script( 'fulgur-admin', FULGUR_URL . 'assets/admin.js', array(), FULGUR_VERSION, true );
+		wp_enqueue_script( 'fulgur-admin', FULGUR_URL . 'assets/admin.js', array( 'wp-i18n' ), FULGUR_VERSION, true );
+		wp_set_script_translations( 'fulgur-admin', 'fulgur-cache', FULGUR_DIR . 'languages' );
 		wp_localize_script(
 			'fulgur-admin',
 			'FulgurData',
@@ -60,6 +61,7 @@ class Admin {
 				'state'   => Rest::state(),
 				'version' => FULGUR_VERSION,
 				'preview' => esc_url_raw( add_query_arg( 'fulgur_preview', '1', home_url( '/' ) ) ),
+				'locale'  => str_replace( '_', '-', get_user_locale() ),
 			)
 		);
 	}
@@ -89,7 +91,7 @@ class Admin {
 			array(
 				'parent' => 'fulgur',
 				'id'     => 'fulgur-purge-all',
-				'title'  => 'Vider tout le cache',
+				'title'  => __( 'Clear all cache', 'fulgur-cache' ),
 				'href'   => wp_nonce_url( admin_url( 'admin-post.php?action=fulgur_purge' ), 'fulgur_purge' ),
 			)
 		);
@@ -99,7 +101,7 @@ class Admin {
 				array(
 					'parent' => 'fulgur',
 					'id'     => 'fulgur-purge-this',
-					'title'  => 'Vider le cache de cette page',
+					'title'  => __( 'Clear this page\'s cache', 'fulgur-cache' ),
 					'href'   => wp_nonce_url( admin_url( 'admin-post.php?action=fulgur_purge&url=' . rawurlencode( $current ) ), 'fulgur_purge' ),
 				)
 			);
@@ -107,7 +109,7 @@ class Admin {
 				array(
 					'parent' => 'fulgur',
 					'id'     => 'fulgur-preview',
-					'title'  => 'Voir cette page optimisée (test)',
+					'title'  => __( 'View this page optimized (test)', 'fulgur-cache' ),
 					'href'   => esc_url( add_query_arg( 'fulgur_preview', '1', $current ) ),
 				)
 			);
@@ -116,7 +118,7 @@ class Admin {
 			array(
 				'parent' => 'fulgur',
 				'id'     => 'fulgur-settings',
-				'title'  => 'Réglages',
+				'title'  => __( 'Settings', 'fulgur-cache' ),
 				'href'   => admin_url( 'admin.php?page=' . self::SLUG ),
 			)
 		);
@@ -124,7 +126,7 @@ class Admin {
 
 	public function quick_purge() {
 		if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'fulgur_purge' ) ) {
-			wp_die( 'Action non autorisée.' );
+			wp_die( __( 'You are not allowed to do this.', 'fulgur-cache' ) );
 		}
 		$url = isset( $_GET['url'] ) ? esc_url_raw( wp_unslash( $_GET['url'] ) ) : '';
 		if ( $url ) {
@@ -143,24 +145,24 @@ class Admin {
 
 	public function notices() {
 		if ( isset( $_GET['fulgur_purged'] ) ) {
-			$msg = 'page' === $_GET['fulgur_purged'] ? 'Cache de la page vidé et régénéré.' : 'Cache vidé. Le préchargement reconstruit les pages en arrière-plan.';
+			$msg = 'page' === $_GET['fulgur_purged'] ? __( 'Page cache cleared and rebuilt.', 'fulgur-cache' ) : __( 'Cache cleared. Preloading is rebuilding pages in the background.', 'fulgur-cache' );
 			echo '<div class="notice notice-success is-dismissible"><p>⚡ ' . esc_html( $msg ) . '</p></div>';
 		}
 		$screen = get_current_screen();
 		if ( $screen && 'toplevel_page_' . self::SLUG !== $screen->id && Settings::get( 'page_cache' ) && is_file( Installer::dropin_path() ) && ! Installer::dropin_is_ours() ) {
-			echo '<div class="notice notice-error"><p><strong>Fulgur Cache :</strong> un autre plugin de cache est actif. <a href="' . esc_url( admin_url( 'admin.php?page=' . self::SLUG ) ) . '">Voir le diagnostic</a></p></div>';
+			echo '<div class="notice notice-error"><p><strong>Fulgur Cache:</strong> ' . esc_html__( 'another caching plugin is active.', 'fulgur-cache' ) . ' <a href="' . esc_url( admin_url( 'admin.php?page=' . self::SLUG ) ) . '">' . esc_html__( 'View diagnostics', 'fulgur-cache' ) . '</a></p></div>';
 		}
 	}
 
 	public function action_links( $links ) {
-		array_unshift( $links, '<a href="' . esc_url( admin_url( 'admin.php?page=' . self::SLUG ) ) . '">Réglages</a>' );
+		array_unshift( $links, '<a href="' . esc_url( admin_url( 'admin.php?page=' . self::SLUG ) ) . '">' . esc_html__( 'Settings', 'fulgur-cache' ) . '</a>' );
 		return $links;
 	}
 
 	public function row_action( $actions, $post ) {
 		if ( current_user_can( 'manage_options' ) && 'publish' === $post->post_status ) {
 			$url                     = get_permalink( $post );
-			$actions['fulgur_purge'] = '<a href="' . esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=fulgur_purge&url=' . rawurlencode( $url ) ), 'fulgur_purge' ) ) . '">Vider le cache</a>';
+			$actions['fulgur_purge'] = '<a href="' . esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=fulgur_purge&url=' . rawurlencode( $url ) ), 'fulgur_purge' ) ) . '">' . esc_html__( 'Clear cache', 'fulgur-cache' ) . '</a>';
 		}
 		return $actions;
 	}
