@@ -94,6 +94,7 @@ class Page_Cache {
 		);
 
 		$this->store( $html );
+		Metrics::record_miss( ( microtime( true ) - $_SERVER['REQUEST_TIME_FLOAT'] ) * 1000 );
 		if ( ! headers_sent() ) {
 			header( 'X-Fulgur-Cache: MISS' );
 		}

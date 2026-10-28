@@ -5,7 +5,7 @@
  */
 defined( 'WP_UNINSTALL_PLUGIN' ) || exit;
 
-foreach ( array( 'fulgur_settings', 'fulgur_stats', 'fulgur_version', 'fulgur_preload_queue', 'fulgur_image_queue' ) as $option ) {
+foreach ( array( 'fulgur_settings', 'fulgur_stats', 'fulgur_version', 'fulgur_preload_queue', 'fulgur_image_queue', 'fulgur_metrics', 'fulgur_secrets', 'fulgur_ai_job', 'fulgur_ai_report', 'fulgur_ai_backup', 'fulgur_ai_history' ) as $option ) {
 	delete_option( $option );
 }
 

@@ -29,6 +29,7 @@ class Plugin {
 		new Database();
 		new Tweaks();
 		new Rest();
+		new Ai();
 		Admin::register_admin_bar();
 
 		if ( ! is_admin() ) {
@@ -72,7 +73,7 @@ class Plugin {
 	public static function deactivate() {
 		Installer::uninstall();
 		Page_Cache::purge_all();
-		foreach ( array( 'fulgur_purge_expired', 'fulgur_process_images', Database::HOOK, Preload::HOOK ) as $hook ) {
+		foreach ( array( 'fulgur_purge_expired', 'fulgur_process_images', Database::HOOK, Preload::HOOK, Ai::HOOK, Ai::AUTOPILOT ) as $hook ) {
 			wp_clear_scheduled_hook( $hook );
 		}
 	}
@@ -94,6 +95,7 @@ class Plugin {
 	 */
 	public function settings_updated( $new, $old ) {
 		Installer::write_config();
+		Ai::schedule_autopilot();
 		$server_keys = array( 'page_cache', 'cache_mobile', 'browser_cache', 'exclude_urls', 'exclude_cookies' );
 		foreach ( $server_keys as $key ) {
 			if ( $new[ $key ] !== $old[ $key ] ) {

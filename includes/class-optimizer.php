@@ -43,15 +43,20 @@ class Optimizer {
 			$html = Assets::optimize_css( $html, (bool) $this->s['font_display_swap'] );
 		}
 
-		// 2. JavaScript.
-		if ( $this->s['delay_js'] || $this->s['defer_js'] ) {
-			$html = $this->scripts( $html );
-		}
-
-		// 3. Médias (sur le HTML débarrassé des scripts/styles pour ne rien casser).
+		// 2. Médias (sur le HTML débarrassé des scripts/styles pour ne rien casser).
 		$html = $this->protect( $html );
 		$html = Media::process( $html, $this->s, $this->head, $this->footer );
 		$html = $this->restore( $html );
+
+		// 3. CSS critique / suppression du CSS inutilisé (sur le HTML final, avant transformation des scripts).
+		if ( 'off' !== $this->s['css_mode'] ) {
+			$html = Used_Css::process( $html, $this->s['css_mode'], Settings::lines( 'css_safelist' ) );
+		}
+
+		// 3 bis. JavaScript.
+		if ( $this->s['delay_js'] || $this->s['defer_js'] ) {
+			$html = $this->scripts( $html );
+		}
 
 		// 4. Préconnexions et préchargement intelligent.
 		$this->resource_hints();

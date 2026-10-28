@@ -173,6 +173,19 @@ class Fulgur_Serve {
 	}
 
 	/**
+	 * Comptage échantillonné (1 page sur 10) pour mesurer la charge sans ralentir le service.
+	 */
+	private static function sample_hit( array $cfg ) {
+		if ( 1 !== mt_rand( 1, 10 ) ) {
+			return;
+		}
+		$dir = rtrim( $cfg['cache_dir'], '/' ) . '/stats';
+		if ( is_dir( $dir ) || @mkdir( $dir, 0755, true ) ) {
+			@file_put_contents( $dir . '/hits-' . gmdate( 'YmdH' ) . '.log', '1', FILE_APPEND );
+		}
+	}
+
+	/**
 	 * Point d'entrée du drop-in : sert la page depuis le disque si possible.
 	 */
 	public static function serve( $config_dir ) {
@@ -234,6 +247,8 @@ class Fulgur_Serve {
 			http_response_code( 304 );
 			exit;
 		}
+
+		self::sample_hit( $cfg );
 
 		if ( '' !== $content_encoding ) {
 			header( 'Content-Encoding: ' . $content_encoding );

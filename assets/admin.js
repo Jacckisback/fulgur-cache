@@ -21,6 +21,15 @@
 
 	var TABS = [
 		{ id: 'dashboard', icon: '◎', label: 'Tableau de bord' },
+		{ id: 'ai', icon: '✦', label: 'Optimiseur IA', sections: [
+			{ title: 'Analyse et optimisation par Claude', fields: [], custom: 'aiRun' },
+			{ title: 'Connexion à Claude', fields: [
+				{ key: 'ai_model', type: 'select', label: 'Modèle', options: { 'claude-opus-5-5': 'Claude Opus 5.5 — le plus précis (≈ 0,15 à 0,40 $ / analyse)', 'claude-sonnet-5-5': 'Claude Sonnet 5.5 — équilibré (≈ 0,08 à 0,20 $)', 'claude-haiku-5-5': 'Claude Haiku 5.5 — économique (≈ 0,01 $)' }, help: 'Facturé directement par Anthropic sur ta clé API. Une analyse par semaine suffit.' },
+				{ key: 'ai_psi', type: 'toggle', label: 'Inclure les mesures Google PageSpeed', help: 'Claude reçoit les vrais Core Web Vitals (LCP, TBT, CLS) et les problèmes détectés par Lighthouse. Ajoute 1 à 2 minutes à l\'analyse.', risk: 'safe' },
+				{ key: 'ai_auto', type: 'select', label: 'Pilote automatique', options: { off: 'Désactivé', suggest: 'Analyse chaque semaine et m\'envoie les recommandations par e-mail', auto: 'Analyse et applique chaque semaine les réglages sans risque (annulation auto si le score baisse)' } }
+			], custom: 'aiKey' },
+			{ title: 'Historique', fields: [], custom: 'aiHistory' }
+		] },
 		{ id: 'cache', icon: '⚡', label: 'Cache', sections: [
 			{ title: 'Cache de page', fields: [
 				{ key: 'page_cache', type: 'toggle', label: 'Activer le cache de page', help: 'Chaque page est générée une seule fois puis servie en HTML statique, sans PHP ni base de données. C\'est le réglage qui apporte le plus de vitesse.', risk: 'safe' },
@@ -41,6 +50,8 @@
 				{ key: 'minify_html', type: 'toggle', label: 'Minifier le HTML', help: 'Supprime commentaires et espaces inutiles.', risk: 'safe' },
 				{ key: 'minify_css', type: 'toggle', label: 'Minifier le CSS', help: 'Fichiers CSS allégés et mis en cache d\'un an.', risk: 'safe' },
 				{ key: 'font_display_swap', type: 'toggle', label: 'Texte visible pendant le chargement des polices', help: 'Ajoute font-display: swap : le texte s\'affiche immédiatement avec une police système.', risk: 'safe' },
+				{ key: 'css_mode', type: 'select', label: 'CSS critique / CSS inutilisé', options: { off: 'Désactivé', critical: 'CSS critique : CSS utile en ligne, le reste en asynchrone (recommandé)', remove: 'Supprimer le CSS inutilisé : le reste n\'est chargé qu\'à la première interaction' }, help: 'Chaque page reçoit uniquement les règles CSS qu\'elle utilise, directement dans le HTML : plus aucun CSS ne bloque l\'affichage. Calculé sur ton serveur, sans service externe.' },
+				{ key: 'css_safelist', type: 'textarea', label: 'Classes CSS toujours conservées', help: 'Classes ajoutées par JavaScript (menus ouverts, sliders, pop-ups). Une partie de nom par ligne.', show: 'css_mode' },
 				{ key: 'google_fonts', type: 'select', label: 'Google Fonts', options: { off: 'Ne rien changer', swap: 'Optimiser (swap + préconnexion)', local: 'Héberger localement (RGPD + plus rapide)' }, help: 'L\'hébergement local supprime la connexion à Google : plus rapide et conforme RGPD.' }
 			] },
 			{ title: 'JavaScript', fields: [
@@ -238,7 +249,8 @@
 			'<div><h2>' + (speedup ? 'Ton site répond <strong>' + speedup.toFixed(1).replace('.', ',') + '× plus vite</strong>' : 'Mesure le gain de vitesse de ton site') + '</h2>' +
 			'<p>' + (speedup ? 'Temps de réponse serveur : ' + st.speed_before + ' ms sans cache → <strong>' + st.speed_after + ' ms</strong> avec Fulgur.' : 'Le test compare le temps de réponse de ta page d\'accueil sans cache et avec cache.') + '</p></div>' +
 			'<div class="fulgur-hero-actions"><button class="fulgur-btn is-light" data-action="speedtest">Lancer le test serveur</button>' +
-			'<button class="fulgur-btn is-light" data-action="pagespeed">Score PageSpeed mobile</button></div>' +
+			'<button class="fulgur-btn is-light" data-action="pagespeed">Score PageSpeed mobile</button>' +
+			'<a class="fulgur-btn is-gold" href="#ai" data-tab="ai">✦ Optimiser avec l\'IA</a></div>' +
 			'<div id="fulgur-psi" class="fulgur-psi"></div></section>';
 
 		h += '<div class="fulgur-kpis">' +
@@ -273,6 +285,7 @@
 		});
 		h += '</div>';
 		if (!onboarding && state.settings.profile === 'custom') h += '<p class="fulgur-note">Réglages personnalisés actifs.</p>';
+		if (!onboarding && state.settings.profile === 'ai') h += '<p class="fulgur-note">✦ Réglages optimisés par l\'IA pour ton serveur.</p>';
 		return h;
 	}
 
@@ -330,7 +343,105 @@
 			(f.help ? '<p>' + esc(f.help) + '</p>' : '') + '</div><div class="fulgur-field-input">' + input + '</div></div>';
 	}
 
+	var STAGES = [['collect', 'Mesures'], ['analyze', 'Analyse Claude'], ['ready', 'Recommandations'], ['apply', 'Application'], ['verify', 'Vérification']];
+	var SEVERITY = { critical: 'Critique', high: 'Important', medium: 'Moyen', low: 'Mineur' };
+	var aiSelected = null;
+
+	function labelFor(key) {
+		var found = key;
+		TABS.forEach(function (t) { (t.sections || []).forEach(function (sec) { sec.fields.forEach(function (f) { if (f.key === key) found = f.label; }); }); });
+		return found;
+	}
+
+	function aiBusy() { var j = state.ai.job; return j.status === 'queued' || j.status === 'running'; }
+
+	function fmtValue(v) {
+		if (v === true) return 'activé';
+		if (v === false) return 'désactivé';
+		var s = String(v);
+		return s.indexOf('\n') > -1 ? s.split('\n').filter(Boolean).length + ' entrées' : s;
+	}
+
 	var CUSTOM = {
+		aiRun: function () {
+			var ai = state.ai, job = ai.job, h = '';
+			if (!ai.has_key) {
+				return '<div class="fulgur-ai-intro"><p><strong>Claude analyse ton serveur, la charge réelle, le HTML et les mesures PageSpeed, puis choisit les meilleurs réglages pour ton site.</strong> Fulgur les applique, re-mesure et annule automatiquement si le score baisse ou si une erreur apparaît.</p>' +
+					'<p>Pour commencer, colle ta clé API Anthropic plus bas (console.anthropic.com → API Keys).</p></div>';
+			}
+			var idx = -1;
+			STAGES.forEach(function (st, i) { if (st[0] === job.stage) idx = i; });
+			if (job.stage === 'done') idx = STAGES.length;
+			if (job.stage !== 'idle') {
+				h += '<ol class="fulgur-stepper">' + STAGES.map(function (st, i) {
+					var cls = i < idx ? 'is-done' : (i === idx ? (job.stage === 'error' ? 'is-error' : (aiBusy() ? 'is-running' : 'is-done')) : '');
+					return '<li class="' + cls + '"><span></span>' + st[1] + '</li>';
+				}).join('') + '</ol>';
+				h += '<p class="fulgur-ai-msg ' + (job.stage === 'error' ? 'is-error' : '') + '">' + (aiBusy() ? '<span class="fulgur-spin"></span> ' : '') + esc(job.message) + '</p>';
+			}
+			if (!aiBusy()) {
+				h += '<div class="fulgur-inline"><div><strong>' + (job.stage === 'idle' ? 'Prêt pour une première analyse' : 'Nouvelle analyse') + '</strong><p>Durée : 1 à 4 minutes. Seules des données techniques sont envoyées (aucun contenu, aucune donnée personnelle).</p></div>' +
+					'<button class="fulgur-btn is-primary" data-action="ai-start">✦ Analyser et optimiser mon site</button></div>';
+			}
+			var r = job.result;
+			if (r && (job.stage === 'ready' || job.stage === 'done' || job.stage === 'apply' || job.stage === 'verify')) {
+				h += '<div class="fulgur-ai-result"><p class="fulgur-ai-summary">' + esc(r.summary) + '</p>' +
+					(r.expected_gain ? '<p class="fulgur-ai-gain">Gain attendu : <strong>' + esc(r.expected_gain) + '</strong></p>' : '');
+				if (r.diagnosis && r.diagnosis.length) {
+					h += '<h4>Diagnostic</h4><ul class="fulgur-diag">' + r.diagnosis.map(function (d) {
+						return '<li class="is-' + esc(d.severity) + '"><span class="sev">' + esc(SEVERITY[d.severity] || d.severity) + '</span><div><strong>' + esc(d.title) + '</strong><p>' + esc(d.detail) + '</p></div></li>';
+					}).join('') + '</ul>';
+				}
+				if (r.changes && r.changes.length) {
+					if (aiSelected === null) aiSelected = r.changes.filter(function (c) { return c.risk !== 'advanced'; }).map(function (c) { return c.key; });
+					var editable = job.stage === 'ready';
+					h += '<h4>Réglages proposés</h4><ul class="fulgur-changes">' + r.changes.map(function (c) {
+						var checked = editable ? aiSelected.indexOf(c.key) > -1 : (job.selected || []).indexOf(c.key) > -1;
+						return '<li><label><input type="checkbox" data-ai-key="' + esc(c.key) + '"' + (checked ? ' checked' : '') + (editable ? '' : ' disabled') + '>' +
+							'<div><strong>' + esc(labelFor(c.key)) + '</strong> <code class="fulgur-key">' + esc(c.key) + '</code> <span class="fulgur-risk is-' + esc(c.risk) + '">' + RISK[c.risk][0] + '</span>' +
+							'<span class="fulgur-diff">' + esc(fmtValue(c.current)) + ' → <b>' + esc(fmtValue(c.value)) + '</b></span>' +
+							'<p>' + esc(c.reason) + (c.impact ? ' <em>' + esc(c.impact) + '</em>' : '') + '</p></div></label></li>';
+					}).join('') + '</ul>';
+					if (editable) h += '<div class="fulgur-inline"><p>Les réglages actuels sont sauvegardés : un clic suffit pour revenir en arrière.</p><button class="fulgur-btn is-primary" data-action="ai-apply">Appliquer et vérifier</button></div>';
+				} else {
+					h += '<p class="fulgur-note">Aucun changement nécessaire : ta configuration est déjà optimale pour ce serveur.</p>';
+				}
+				if (r.server_recommendations && r.server_recommendations.length) {
+					h += '<h4>Côté hébergement</h4><ul class="fulgur-server">' + r.server_recommendations.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
+				}
+				if (r.usage) h += '<p class="fulgur-note">Modèle : ' + esc(r.model) + ' · ' + r.usage.input + ' jetons envoyés, ' + r.usage.output + ' reçus.</p>';
+				h += '</div>';
+			}
+			if (job.verify) {
+				var v = job.verify;
+				h += '<div class="fulgur-verify ' + (v.rolled_back ? 'is-bad' : 'is-good') + '">' +
+					(v.score_before != null && v.score_after != null ? '<span class="scores">' + v.score_before + ' → <b>' + v.score_after + '</b></span>' : '') +
+					'<p>' + esc(v.message) + '</p></div>';
+			}
+			if (ai.can_undo && !aiBusy()) {
+				h += '<div class="fulgur-inline"><p>Les derniers réglages appliqués par l\'IA peuvent être annulés.</p><button class="fulgur-btn is-danger" data-action="ai-undo">Revenir aux réglages précédents</button></div>';
+			}
+			return h;
+		},
+		aiKey: function () {
+			var ai = state.ai;
+			var h = '<div class="fulgur-field is-wide"><div class="fulgur-field-text"><label for="fulgur-ai-key">Clé API Anthropic</label><p>' +
+				(ai.key_locked ? 'Définie dans wp-config.php (FULGUR_ANTHROPIC_API_KEY).' : 'Stockée sur ton serveur, jamais renvoyée au navigateur. Plus sûr : la définir dans wp-config.php avec <code>define( \'FULGUR_ANTHROPIC_API_KEY\', \'…\' );</code>') + '</p></div>' +
+				'<div class="fulgur-field-input">' + (ai.has_key
+					? '<div class="fulgur-connected">✓ Connecté' + (ai.key_locked ? '' : ' <button class="fulgur-link" data-action="ai-key-remove">Retirer</button>') + '</div>'
+					: '<div class="fulgur-keyrow"><input type="password" id="fulgur-ai-key" placeholder="sk-ant-…" autocomplete="off"><button class="fulgur-btn is-secondary" data-action="ai-key-save">Connecter</button></div>') +
+				'</div></div>';
+			h += '<div class="fulgur-field is-wide"><div class="fulgur-field-text"><label for="fulgur-psi-key">Clé API PageSpeed (facultatif)</label><p>Sans clé, Google limite le nombre d\'analyses. Gratuite sur console.cloud.google.com.</p></div>' +
+				'<div class="fulgur-field-input"><div class="fulgur-keyrow"><input type="password" id="fulgur-psi-key" placeholder="' + (ai.has_psi_key ? '•••••••• (enregistrée)' : 'AIza…') + '" autocomplete="off"><button class="fulgur-btn is-secondary" data-action="ai-psi-save">Enregistrer</button></div></div></div>';
+			return h;
+		},
+		aiHistory: function () {
+			var hist = state.ai.history || [];
+			if (!hist.length) return '<p class="fulgur-note">Aucune optimisation appliquée pour le moment.</p>';
+			return '<table class="fulgur-table"><thead><tr><th>Date</th><th>Mode</th><th>Score mobile</th><th>Réglages</th><th>Résultat</th></tr></thead><tbody>' + hist.map(function (e) {
+				return '<tr><td>' + new Date(e.date * 1000).toLocaleDateString('fr-FR') + '</td><td>' + (e.mode === 'auto' ? 'Automatique' : 'Manuel') + '</td><td>' + (e.score_before != null ? e.score_before + ' → ' + (e.score_after != null ? e.score_after : '?') : '—') + '</td><td>' + esc((e.changes || []).join(', ')) + '</td><td>' + (e.rolled_back ? '<span class="fulgur-risk is-advanced">Annulé</span> ' + esc(e.reason) : '<span class="fulgur-risk is-safe">Appliqué</span>') + '</td></tr>';
+			}).join('') + '</tbody></table>';
+		},
 		bulkImages: function () {
 			if (!state.images.webp) return '<div class="fulgur-inline is-warn">La conversion d\'images n\'est pas disponible sur ce serveur (GD avec WebP ou Imagick requis).</div>';
 			return '<div class="fulgur-inline"><div><strong>Médiathèque existante</strong><p>' + state.images.total + ' images JPEG/PNG. Les nouvelles images sont converties automatiquement à l\'envoi ; les images du thème sont converties en arrière-plan' + (state.images.queue ? ' (' + state.images.queue + ' en file)' : '') + '.</p>' +
@@ -502,6 +613,57 @@
 		}
 	};
 
+	var pollTimer = null;
+	function poll() {
+		clearTimeout(pollTimer);
+		if (!aiBusy()) return;
+		pollTimer = setTimeout(function () {
+			api('/ai/status').then(function (ai) {
+				var was = state.ai.job.stage;
+				state.ai = ai;
+				if (ai.job.stage !== was && (ai.job.stage === 'done' || ai.job.stage === 'ready')) {
+					return api('/status').then(function (s) { state = s; draft = clone(s.settings); });
+				}
+			}).then(function () { if (tab === 'ai') render(); poll(); })
+				.catch(function () { poll(); });
+		}, 4000);
+	}
+
+	ACTIONS['ai-key-save'] = function (btn) {
+		var input = document.getElementById('fulgur-ai-key');
+		if (!input.value.trim()) return toast('Colle ta clé API Anthropic.', 'warn');
+		busy(btn, true, 'Vérification…');
+		api('/ai/key', 'POST', { key: input.value.trim() }).then(function (s) { setState(s); toast('Claude est connecté.'); })
+			.catch(function (e) { busy(btn, false); toast(e.message, 'error'); });
+	};
+	ACTIONS['ai-key-remove'] = function () {
+		if (!confirm('Retirer la clé API ? Le pilote automatique sera désactivé.')) return;
+		api('/ai/key', 'POST', { remove: true }).then(function (s) { setState(s); });
+	};
+	ACTIONS['ai-psi-save'] = function (btn) {
+		var input = document.getElementById('fulgur-psi-key');
+		busy(btn, true);
+		api('/ai/key', 'POST', { psi_key: input.value.trim() }).then(function (s) { setState(s); toast('Clé PageSpeed enregistrée.'); })
+			.catch(function (e) { busy(btn, false); toast(e.message, 'error'); });
+	};
+	ACTIONS['ai-start'] = function (btn) {
+		if (dirty()) return toast('Enregistre d\'abord tes modifications.', 'warn');
+		busy(btn, true, 'Démarrage…');
+		aiSelected = null;
+		api('/ai/start', 'POST').then(function (ai) { state.ai = ai; render(); poll(); })
+			.catch(function (e) { busy(btn, false); toast(e.message, 'error'); });
+	};
+	ACTIONS['ai-apply'] = function (btn) {
+		busy(btn, true, 'Application…');
+		api('/ai/apply', 'POST', { keys: aiSelected || [] }).then(function (ai) { state.ai = ai; render(); poll(); })
+			.catch(function (e) { busy(btn, false); toast(e.message, 'error'); });
+	};
+	ACTIONS['ai-undo'] = function (btn) {
+		if (!confirm('Revenir aux réglages d\'avant la dernière optimisation IA ?')) return;
+		busy(btn, true);
+		api('/ai/undo', 'POST').then(function (s) { state = s; draft = clone(s.settings); render(); toast('Réglages précédents restaurés.'); });
+	};
+
 	function runOnboarding(profile) {
 		document.getElementById('fulgur-ob-step1').hidden = true;
 		document.getElementById('fulgur-ob-step2').hidden = false;
@@ -557,6 +719,13 @@
 
 	function onInput(e) {
 		var el = e.target, key = el.dataset.key;
+		if (el.dataset.aiKey) {
+			aiSelected = aiSelected || [];
+			var k = el.dataset.aiKey, i = aiSelected.indexOf(k);
+			if (el.checked && i < 0) aiSelected.push(k);
+			if (!el.checked && i > -1) aiSelected.splice(i, 1);
+			return;
+		}
 		if (key) {
 			var prev = draft[key];
 			if (el.type === 'checkbox') draft[key] = el.checked;
@@ -588,4 +757,5 @@
 	});
 
 	render();
+	poll();
 })();

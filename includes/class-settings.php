@@ -32,6 +32,8 @@ class Settings {
 			// CSS.
 			'minify_css'           => true,
 			'font_display_swap'    => true,
+			'css_mode'             => 'off', // off | critical | remove.
+			'css_safelist'         => "is-\nhas-\nactive\nopen\nshow\nvisible\nhidden\ntoggle\nfocus\nsticky\nscrolled\nfixed\nloaded\nlazy\nanimat\nfade\nslide\nswiper\nslick\nmodal\npopup\ndropdown\nsub-menu\ncurrent\nselected\nexpanded\ncollapse\nwoocommerce\nfulgur",
 			'google_fonts'         => 'swap', // off | swap | local.
 
 			// JavaScript.
@@ -81,6 +83,11 @@ class Settings {
 			'cloudflare_zone'      => '',
 
 			// Interface.
+			// Optimiseur IA (Claude).
+			'ai_model'             => 'claude-opus-5-5',
+			'ai_auto'              => 'off', // off | suggest | auto.
+			'ai_psi'               => true,
+
 			'profile'              => 'balanced',
 			'onboarding_done'      => false,
 		);
@@ -99,6 +106,7 @@ class Settings {
 					'page_cache'      => true,
 					'minify_html'     => true,
 					'minify_css'      => false,
+					'css_mode'        => 'off',
 					'defer_js'        => false,
 					'delay_js'        => false,
 					'lazy_images'     => true,
@@ -112,12 +120,13 @@ class Settings {
 			),
 			'balanced' => array(
 				'label'       => 'Équilibré',
-				'description' => 'Recommandé. Ajoute minification CSS, report du JavaScript, façades YouTube et pré-rendu instantané.',
+				'description' => 'Recommandé. Ajoute CSS critique, minification, report du JavaScript, façades YouTube et pré-rendu instantané.',
 				'gain'        => '+60 à 80 % de vitesse',
 				'values'      => array(
 					'page_cache'      => true,
 					'minify_html'     => true,
 					'minify_css'      => true,
+					'css_mode'        => 'critical',
 					'defer_js'        => true,
 					'delay_js'        => false,
 					'lazy_images'     => true,
@@ -131,12 +140,13 @@ class Settings {
 			),
 			'turbo'    => array(
 				'label'       => 'Turbo',
-				'description' => 'Performance maximale : JavaScript chargé à la première interaction, polices Google hébergées localement (RGPD).',
+				'description' => 'Performance maximale : CSS inutilisé supprimé, JavaScript chargé à la première interaction, polices Google hébergées localement (RGPD).',
 				'gain'        => 'Score PageSpeed 90+ visé',
 				'values'      => array(
 					'page_cache'      => true,
 					'minify_html'     => true,
 					'minify_css'      => true,
+					'css_mode'        => 'remove',
 					'defer_js'        => true,
 					'delay_js'        => true,
 					'lazy_images'     => true,
@@ -148,6 +158,22 @@ class Settings {
 					'heartbeat'       => 'disable_front',
 				),
 			),
+		);
+	}
+
+	/**
+	 * Valeurs autorisées des réglages à choix (utilisé aussi pour valider les propositions de l'IA).
+	 */
+	public static function choices() {
+		return array(
+			'google_fonts'          => array( 'off', 'swap', 'local' ),
+			'css_mode'              => array( 'off', 'critical', 'remove' ),
+			'image_format'          => array( 'webp', 'avif' ),
+			'speculation'           => array( 'off', 'prefetch', 'prerender' ),
+			'speculation_eagerness' => array( 'conservative', 'moderate', 'eager' ),
+			'heartbeat'             => array( 'default', 'reduce', 'disable_front', 'disable' ),
+			'ai_model'              => array( 'claude-opus-5-5', 'claude-sonnet-5-5', 'claude-haiku-5-5' ),
+			'ai_auto'               => array( 'off', 'suggest', 'auto' ),
 		);
 	}
 
@@ -179,7 +205,12 @@ class Settings {
 			if ( ! array_key_exists( $key, $defaults ) ) {
 				continue;
 			}
-			$current[ $key ] = self::sanitize( $value, $defaults[ $key ] );
+			$value   = self::sanitize( $value, $defaults[ $key ] );
+			$choices = self::choices();
+			if ( isset( $choices[ $key ] ) && ! in_array( $value, $choices[ $key ], true ) ) {
+				continue;
+			}
+			$current[ $key ] = $value;
 		}
 
 		update_option( self::OPTION, $current, true );

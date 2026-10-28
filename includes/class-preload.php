@@ -10,7 +10,7 @@ class Preload {
 
 	const QUEUE = 'fulgur_preload_queue';
 	const HOOK  = 'fulgur_preload_run';
-	const UA    = 'Mozilla/5.0 (compatible; FulgurPreload/1.0; +https://gustinai.com)';
+	const UA    = 'Mozilla/5.0 (compatible; FulgurPreload/1.0; +https://thierrygustin.com/fulgur-cache)';
 	const UA_MOBILE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 FulgurPreload/1.0';
 
 	public function __construct() {

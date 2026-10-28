@@ -30,6 +30,11 @@ class Rest {
 			'/export'         => array( 'GET', 'export' ),
 			'/import'         => array( 'POST', 'import' ),
 			'/reset'          => array( 'POST', 'reset' ),
+			'/ai/key'         => array( 'POST', 'ai_key' ),
+			'/ai/start'       => array( 'POST', 'ai_start' ),
+			'/ai/status'      => array( 'GET', 'ai_status' ),
+			'/ai/apply'       => array( 'POST', 'ai_apply' ),
+			'/ai/undo'        => array( 'POST', 'ai_undo' ),
 		);
 		foreach ( $routes as $route => $def ) {
 			register_rest_route(
@@ -63,6 +68,8 @@ class Rest {
 			'diagnostics' => Diagnostics::run(),
 			'nginx'       => Installer::nginx_rules(),
 			'home'        => home_url( '/' ),
+			'ai'          => Ai::public_state(),
+			'css_files'   => count( glob( FULGUR_CACHE_DIR . '/ucss/*.dat' ) ?: array() ),
 		);
 	}
 
@@ -199,6 +206,50 @@ class Rest {
 		Settings::reset_cache();
 		Settings::apply_profile( 'balanced' );
 		Settings::update( array( 'onboarding_done' => true ) );
+		return rest_ensure_response( self::state() );
+	}
+
+	public function ai_key( \WP_REST_Request $req ) {
+		$key = trim( (string) $req->get_param( 'key' ) );
+		$psi = $req->get_param( 'psi_key' );
+		if ( '' !== $key ) {
+			$ok = Ai::test_key( $key );
+			if ( is_wp_error( $ok ) ) {
+				return new \WP_Error( $ok->get_error_code(), $ok->get_error_message(), array( 'status' => 400 ) );
+			}
+			Ai::set_secret( 'anthropic', $key );
+		} elseif ( $req->get_param( 'remove' ) ) {
+			Ai::set_secret( 'anthropic', '' );
+		}
+		if ( null !== $psi ) {
+			Ai::set_secret( 'psi', trim( (string) $psi ) );
+		}
+		Ai::schedule_autopilot();
+		return rest_ensure_response( self::state() );
+	}
+
+	public function ai_start() {
+		$job = Ai::start( 'manual' );
+		if ( is_wp_error( $job ) ) {
+			return new \WP_Error( $job->get_error_code(), $job->get_error_message(), array( 'status' => 400 ) );
+		}
+		return rest_ensure_response( Ai::public_state() );
+	}
+
+	public function ai_status() {
+		return rest_ensure_response( Ai::maybe_run_inline() );
+	}
+
+	public function ai_apply( \WP_REST_Request $req ) {
+		$job = Ai::apply( array_map( 'sanitize_key', (array) $req->get_param( 'keys' ) ) );
+		if ( is_wp_error( $job ) ) {
+			return new \WP_Error( $job->get_error_code(), $job->get_error_message(), array( 'status' => 400 ) );
+		}
+		return rest_ensure_response( Ai::public_state() );
+	}
+
+	public function ai_undo() {
+		Ai::undo();
 		return rest_ensure_response( self::state() );
 	}
 }
