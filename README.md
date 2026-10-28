@@ -27,7 +27,8 @@
 </p>
 
 <p align="center">
-  <img src=".github/readme/dashboard.jpg" alt="Fulgur Cache dashboard inside the WordPress admin" width="100%">
+  <img src=".github/readme/dashboard.jpg" alt="Fulgur Cache dashboard inside the WordPress admin" width="100%"><br>
+  <sub>The Fulgur dashboard in the WordPress admin (demo data).</sub>
 </p>
 
 ---
@@ -78,7 +79,9 @@
 With WP-CLI:
 
 ```bash
-wp plugin install https://github.com/Jacckisback/fulgur-cache/releases/latest/download/fulgur-cache.zip --activate
+wp plugin install \
+  https://github.com/Jacckisback/fulgur-cache/releases/latest/download/fulgur-cache.zip \
+  --activate
 wp fulgur profile balanced
 wp fulgur preload
 ```
@@ -185,7 +188,8 @@ flowchart LR
 ## The AI optimizer
 
 <p align="center">
-  <img src=".github/readme/ai.png" alt="AI optimizer with a diagnosis and proposed settings" width="92%">
+  <img src=".github/readme/ai.png" alt="AI optimizer with a diagnosis and proposed settings" width="92%"><br>
+  <sub>Recommendations waiting for approval (demo data).</sub>
 </p>
 
 The AI optimizer turns Fulgur's settings into a closed loop: **measure → analyze → apply → verify → keep or roll back**.
